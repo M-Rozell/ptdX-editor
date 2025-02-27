@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import os
 from file_utils import find_ptdx_files, update_xml_files
 import xml.etree.ElementTree as ET
+import pandas as pd
 
 
 app = Flask(__name__)
@@ -44,6 +45,62 @@ def update_files():
 
     updated_files = update_xml_files(folder_path, updates)
     return jsonify({'message': 'Files updated successfully', 'updated_files': updated_files}), 200
+
+
+
+@app.route('/export', methods=['POST'])
+def export_to_excel():
+    """Generates an Excel spreadsheet with data from all ptdX files."""
+    data = request.json
+    folder_path = data.get('folderPath')
+
+    if not folder_path or not os.path.isdir(folder_path):
+        return jsonify({'error': 'Invalid folder path'}), 400
+
+    file_list = find_ptdx_files(folder_path)
+    extracted_data = []
+
+    for file_path in file_list:
+        try:
+            tree = ET.parse(file_path)
+            root = tree.getroot()
+            
+            file_name = os.path.basename(file_path)
+            date = root.findtext(".//I_002/Inspection_Timestamp", default="")
+            name = root.findtext(".//I_002/Surveyed_By", default="")
+            asset = root.findtext(".//A_002/Pipe_Segment_Reference", default="")
+            upstream_mh = root.findtext(".//A_002/Upstream_AP", default="")
+            downstream_mh = root.findtext(".//A_002/Downstream_AP", default="")
+            
+            height = root.findtext(".//A_002/Height", default="0")
+            size = round(float(height) / 25.4, 2) if height else ""
+
+            length_surveyed = root.findtext(".//I_002/Length_Surveyed", default="0")
+            distance = round(float(length_surveyed) / 304.8, 2) if length_surveyed else ""
+
+            msa_comments = ""
+            for of_002 in root.findall(".//OF_002"):
+                code = of_002.findtext("Code", default="")
+                if code == "MSA":
+                    msa_comments = of_002.findtext("Comments", default="")
+                    break  # Use the first occurrence
+
+            extracted_data.append([
+                file_name, date, name, asset, upstream_mh, downstream_mh, size, distance, msa_comments
+            ])
+
+        except Exception as e:
+            print(f"⚠️ Error processing {file_path}: {str(e)}")
+
+    # Create a DataFrame and save as Excel
+    df = pd.DataFrame(extracted_data, columns=[
+        "File Name", "Date", "Name", "Asset", "Upstream MH", "Downstream MH", "Size", "Distance", "MSA"
+    ])
+
+    export_path = os.path.join(folder_path, "export.xlsx")
+    df.to_excel(export_path, index=False)
+
+    return send_file(export_path, as_attachment=True)
 
 
 

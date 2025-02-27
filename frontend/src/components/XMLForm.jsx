@@ -10,7 +10,7 @@ const XMLForm = ({ folderPath }) => {
     Purpose: "",
   });
 
-  
+  const [exporting, setExporting] = useState(false); // Track export state
   
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -72,6 +72,41 @@ const XMLForm = ({ folderPath }) => {
   };
 
 
+  const handleExport = async () => {
+    if (!folderPath) {
+      console.error("Folder path is required");
+      return;
+    }
+  
+    setExporting(true);
+    try {
+      const filePath = await window.electronAPI.exportData(folderPath);
+      if (filePath) {
+        console.log(`✅ Exported file saved at: ${filePath}`);
+      } else {
+        console.error("❌ Export failed.");
+      }
+    } catch (error) {
+      console.error("❌ Error exporting:", error);
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleClear = () => {
+    setFormData({
+      Owner: "",
+      Pipe_Use: "",
+      Customer: "",
+      Project: "",
+      WorkOrder: "",
+      Purpose: "",
+    });
+    console.log("🧹 Form cleared!");
+  };
+
+
+
   return (
     <div>
       <h3>Edit XML Files</h3>
@@ -116,6 +151,10 @@ const XMLForm = ({ folderPath }) => {
         </div>
       ))}
       <button onClick={handleSubmit}>Save Changes</button>
+      <button onClick={handleExport} disabled={exporting}>
+        {exporting ? "Exporting..." : "Export"}
+      </button>
+      <button onClick={handleClear}>Clear</button>
     </div>
   );
 };

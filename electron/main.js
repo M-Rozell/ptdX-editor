@@ -43,6 +43,33 @@ ipcMain.handle("open-folder-dialog", async () => {
 });
 
 
+ipcMain.handle("export-data", async (_, folderPath) => {
+  try {
+    const response = await fetch("http://localhost:5000/export", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ folderPath }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to export data.");
+    }
+
+    // Get the file as a blob
+    const buffer = await response.arrayBuffer();
+    const fs = require("fs");
+    const filePath = path.join(folderPath, "export.xlsx");
+
+    // Save the file
+    fs.writeFileSync(filePath, Buffer.from(buffer));
+    console.log(`✅ Export successful: ${filePath}`);
+    return filePath;
+  } catch (error) {
+    console.error("❌ Export error:", error);
+    return null;
+  }
+});
+
 
 
 // Electron app lifecycle

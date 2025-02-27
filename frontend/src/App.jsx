@@ -38,11 +38,16 @@ const App = () => {
     }
   };
 
+
+  const handleClearList = () => {
+    setFiles([])
+  }
+
   return (
     <div>
       <h1>PTDX File Editor</h1>
       <button onClick={handleFolderSelection}>Select Project Folder</button>
-      
+      <button onClick={handleClearList}>Clear Files</button>
       <FileList files={files} />
       <XMLForm folderPath={folderPath} />
     </div>
