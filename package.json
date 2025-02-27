@@ -1,0 +1,43 @@
+{
+  "name": "ptdx-editor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "electron/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run backend\" \"npm run dev\" \"npm run electron\"",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\" \"npm run electron\"",
+    "backend": "cd backend && python app.py",
+    "frontend": "cd frontend && npm run dev",
+    "electron": "wait-on http://localhost:5173 && electron .",
+    "build": "vite build && electron-builder"
+  },
+  "build": {
+    "appId": "com.electronvite.ptdxeditor",
+    "productName": "PTDX Editor",
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "electron/**/*",
+    "backend/**/*"
+  ],
+  "win": {
+    "target": "nsis"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "electron": "^34.0.2",
+    "electron-forge": "^5.2.4",
+    "flask": "^0.2.10",
+    "wait-on": "^8.0.2"
+  }
+}
