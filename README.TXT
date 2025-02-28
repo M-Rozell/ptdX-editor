@@ -30,64 +30,47 @@ project-root/
 
 
 
-# Apply additional changes (Material, PO_Number, etc.)
-                    apply_additional_changes(root_element, file_path)
+# Step 2: Update <Comments> based on <Code> and <Distance>
+                    for of_002 in root_element.findall(".//OF_002"):
+                        code_element = of_002.find("Code")
+                        distance_element = of_002.find("Distance")
+                        comments_element = of_002.find("Comments")
 
+                        if code_element is not None and distance_element is not None:
+                            code_value = code_element.text.strip()
+                            try:
+                                distance_value = float(distance_element.text.strip())
+                            except ValueError:
+                                print(f"⚠️ Could not parse <Distance> value in {file_path}")
+                                continue  # Skip this entry if Distance is invalid
 
+                            # Handle Start Inspection Comment
+                            if code_value == "AMH" and distance_value == 0:
+                                start_mh_element = root_element.find(".//I_002/Start_MH")
+                                if start_mh_element is not None and start_mh_element.text:
+                                    start_mh_value = start_mh_element.text.strip()
+                                    comment_text = f"Start Inspection {start_mh_value}"
+                                    if comments_element is None:
+                                        comments_element = ET.Element("Comments")
+                                        of_002.append(comments_element)
+                                        print(f"Created <Comments> in {file_path}")
 
+                                    print(f"Setting <Comments> to '{comment_text}' in {file_path}")
+                                    comments_element.text = comment_text
+                                    updated = True
 
-def apply_additional_changes(root_element, ptdx_file_path):
-    """Apply additional changes (Material, PO_Number, Inspection_Technology_Used_CCTV)"""
-    # Modify <Material> element if its value is "ZZZ"
-    for material in root_element.findall(".//A_002/Material"):
-        if material.text == "ZZZ":
-            material.text = "XXX"
-            print(f"Updated Material to 'XXX' in {ptdx_file_path}")
+                            # Handle End Inspection Comment
+                            elif code_value in ["AMH", "AEP"] and distance_value > 0:
+                                end_mh_element = root_element.find(".//I_002/End_MH")
+                                if end_mh_element is not None and end_mh_element.text:
+                                    end_mh_value = end_mh_element.text.strip()
+                                    comment_text = f"End Inspection {end_mh_value}"
+                                    if comments_element is None:
+                                        comments_element = ET.Element("Comments")
+                                        of_002.append(comments_element)
+                                        print(f"Created <Comments> in {file_path}")
 
-    # Modify <PO_Number> element
-    for poNumber in root_element.findall(".//I_002/PO_Number"):
-        poNumber.text = " "
-        print(f"Updating PO_Number in {ptdx_file_path}")
-
-    # Modify Inspection_Technology_Used_CCTV in <I_002>
-    for cctv in root_element.findall(".//I_002/Inspection_Technology_Used_CCTV"):
-        cctv.text = "true"
-        print(f"Updated Inspection_Technology_Used_CCTV to 'true' in {ptdx_file_path}")
-
-
-        # Access <I_002> section
-        a_002 = root_element.find(".//A_002")
-
-        # Ensure <Lining_Method> exists and update
-        lining_method = a_002.find("Lining_Method")
-        if lining_method is None:
-            lining_method = ET.SubElement(a_002, "Lining_Method")
-            print("Created missing <Lining_Method> tag.")
-        
-        # Modify <Lining_Method> element if value is not "CP"
-        update_lining_method = a_002.find("Lining_Method")
-        for material in root_element.findall(".//A_002/Material"):
-            if material.text == "XXX":
-                update_lining_method.text = "CP"
-                print("Lining_Method updated")
-            else:
-                a_002.remove(update_lining_method)
-                print("Removed <Lining_Method>")
-
-        
-
-    # Check if <Code>MSA</Code> exists
-    msa_exists = any(code.text == "MSA" for code in root_element.findall(".//Code"))
-
-    if not msa_exists:
-        # Find <Total_Length> and <Length_Surveyed>
-        total_length = root_element.find(".//A_002/Total_Length")
-        length_surveyed = root_element.find(".//I_002/Length_Surveyed")
-
-        if total_length is not None and length_surveyed is not None:
-            # Update <Total_Length> value
-            print(f"Updating Total_Length in {ptdx_file_path} from {total_length.text} to {length_surveyed.text}")
-            total_length.text = length_surveyed.text
-        else:
-            print(f"Missing required tags in {ptdx_file_path}")
+                                    print(f"Setting <Comments> to '{comment_text}' in {file_path}")
+                                    comments_element.text = comment_text
+                                    updated = True
 

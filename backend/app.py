@@ -68,9 +68,12 @@ def export_to_excel():
             file_name = os.path.basename(file_path)
             date = root.findtext(".//I_002/Inspection_Timestamp", default="")
             name = root.findtext(".//I_002/Surveyed_By", default="")
+            direction = root.findtext(".//I_002/Direction", default="")
+            cleaning = root.findtext(".//I_002/PreCleaning", default="")
             asset = root.findtext(".//A_002/Pipe_Segment_Reference", default="")
             upstream_mh = root.findtext(".//A_002/Upstream_AP", default="")
             downstream_mh = root.findtext(".//A_002/Downstream_AP", default="")
+            
             
             height = root.findtext(".//A_002/Height", default="0")
             size = round(float(height) / 25.4, 2) if height else ""
@@ -86,7 +89,7 @@ def export_to_excel():
                     break  # Use the first occurrence
 
             extracted_data.append([
-                file_name, date, name, asset, upstream_mh, downstream_mh, size, distance, msa_comments
+                file_name, date, name, asset, upstream_mh, downstream_mh, size, distance, direction, msa_comments, cleaning
             ])
 
         except Exception as e:
@@ -94,7 +97,7 @@ def export_to_excel():
 
     # Create a DataFrame and save as Excel
     df = pd.DataFrame(extracted_data, columns=[
-        "File Name", "Date", "Name", "Asset", "Upstream MH", "Downstream MH", "Size", "Distance", "MSA"
+        "File Name", "Date", "Name", "Asset", "Upstream MH", "Downstream MH", "Size", "Distance", "Direction", "MSA", "Cleaning"
     ])
 
     export_path = os.path.join(folder_path, "export.xlsx")

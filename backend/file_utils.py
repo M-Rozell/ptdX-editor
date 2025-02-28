@@ -172,7 +172,10 @@ def update_xml_files(folder_path, updates):
                                     updated = True
 
 
-                    # Step 2: Update <Comments> based on <Code> and <Distance>
+                    # Step 2: Update <Comments> based on <Code>, <Distance>, and <Direction>
+                    direction_element = root_element.find(".//I_002/Direction")
+                    direction_value = direction_element.text.strip() if direction_element is not None else ""
+
                     for of_002 in root_element.findall(".//OF_002"):
                         code_element = of_002.find("Code")
                         distance_element = of_002.find("Distance")
@@ -186,35 +189,38 @@ def update_xml_files(folder_path, updates):
                                 print(f"⚠️ Could not parse <Distance> value in {file_path}")
                                 continue  # Skip this entry if Distance is invalid
 
+                            # Determine correct manhole based on Direction
+                            upstream_mh = root_element.findtext(".//A_002/Upstream_AP", default="")
+                            downstream_mh = root_element.findtext(".//A_002/Downstream_AP", default="")
+
+                            if direction_value == "D":
+                                start_mh = upstream_mh
+                                end_mh = downstream_mh
+                            elif direction_value == "U":
+                                start_mh = downstream_mh
+                                end_mh = upstream_mh
+                            else:
+                                print(f"⚠️ Unknown Direction '{direction_value}' in {file_path}, skipping.")
+                                continue
+
                             # Handle Start Inspection Comment
                             if code_value == "AMH" and distance_value == 0:
-                                start_mh_element = root_element.find(".//I_002/Start_MH")
-                                if start_mh_element is not None and start_mh_element.text:
-                                    start_mh_value = start_mh_element.text.strip()
-                                    comment_text = f"Start Inspection {start_mh_value}"
-                                    if comments_element is None:
-                                        comments_element = ET.Element("Comments")
-                                        of_002.append(comments_element)
-                                        print(f"Created <Comments> in {file_path}")
-
-                                    print(f"Setting <Comments> to '{comment_text}' in {file_path}")
-                                    comments_element.text = comment_text
-                                    updated = True
-
+                                comment_text = f"Start Inspection {start_mh}"
                             # Handle End Inspection Comment
                             elif code_value in ["AMH", "AEP"] and distance_value > 0:
-                                end_mh_element = root_element.find(".//I_002/End_MH")
-                                if end_mh_element is not None and end_mh_element.text:
-                                    end_mh_value = end_mh_element.text.strip()
-                                    comment_text = f"End Inspection {end_mh_value}"
-                                    if comments_element is None:
-                                        comments_element = ET.Element("Comments")
-                                        of_002.append(comments_element)
-                                        print(f"Created <Comments> in {file_path}")
+                                comment_text = f"End Inspection {end_mh}"
+                            else:
+                                continue  # Skip if no matching condition
 
-                                    print(f"Setting <Comments> to '{comment_text}' in {file_path}")
-                                    comments_element.text = comment_text
-                                    updated = True
+                            if comments_element is None:
+                                comments_element = ET.Element("Comments")
+                                of_002.append(comments_element)
+                                print(f"Created <Comments> in {file_path}")
+
+                            print(f"Setting <Comments> to '{comment_text}' in {file_path}")
+                            comments_element.text = comment_text
+                            updated = True
+
 
 
 
