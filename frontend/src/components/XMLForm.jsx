@@ -109,9 +109,9 @@ const XMLForm = ({ folderPath }) => {
 
   return (
     <div>
-      <h3>Edit XML Files</h3>
+      <h2 className="editFilesHeader">Edit Files</h2>
       {Object.keys(formData).map((key) => (
-        <div key={key}>
+        <div key={key} className="inputName">
           <label>{key}:</label>
           {/* Conditionally render dropdown for specific keys */}
           {key === "Pipe_Use" ? (
@@ -150,11 +150,13 @@ const XMLForm = ({ folderPath }) => {
           )}
         </div>
       ))}
-      <button onClick={handleSubmit}>Save Changes</button>
-      <button onClick={handleExport} disabled={exporting}>
+      <div className="bottomBtnsDiv">
+      <button onClick={handleSubmit} className="bottomBtns">Save Changes</button>
+      <button onClick={handleExport} className="bottomBtns" disabled={exporting}>
         {exporting ? "Exporting..." : "Export"}
       </button>
-      <button onClick={handleClear}>Clear</button>
+      <button onClick={handleClear} className="bottomBtns">Clear</button>
+      </div>
     </div>
   );
 };

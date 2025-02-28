@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import FileList from "./components/FileList";
 import XMLForm from "./components/XMLForm";
+import "./css/App.css"
+
 
 
 
@@ -45,11 +47,13 @@ const App = () => {
 
   return (
     <div>
-      <h1>PTDX File Editor</h1>
-      <button onClick={handleFolderSelection}>Select Project Folder</button>
-      <button onClick={handleClearList}>Clear Files</button>
-      <FileList files={files} />
+      <h1 className="ptdXHeader">.ptdX editor</h1>
+      <div className="btnDiv">
+      <button onClick={handleFolderSelection} className="folderSelectionBtn">Load</button>
+      </div>
       <XMLForm folderPath={folderPath} />
+      <FileList files={files} />
+      <button onClick={handleClearList} className="folderSelectionBtn">Clear Files</button>
     </div>
   );
 };
