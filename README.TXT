@@ -4,7 +4,7 @@ npm run frontend → Starts Vite in the frontend folder.
 npm run electron → Waits for the frontend to start before launching Electron.
 Electron App Window, open DevTools (Ctrl + Shift + I)
 cd backend python app.py
-E:\ptdX
+git init, git add ., git commit -m "", git push origin -u main
 
 Length is millimeters. To round: adjusted_value = round(distance_value / 304.8) * 304.8
 

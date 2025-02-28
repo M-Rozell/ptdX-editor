@@ -4,6 +4,7 @@ import os
 from file_utils import find_ptdx_files, update_xml_files
 import xml.etree.ElementTree as ET
 import pandas as pd
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -66,15 +67,32 @@ def export_to_excel():
             root = tree.getroot()
             
             file_name = os.path.basename(file_path)
-            date = root.findtext(".//I_002/Inspection_Timestamp", default="")
             name = root.findtext(".//I_002/Surveyed_By", default="")
             direction = root.findtext(".//I_002/Direction", default="")
             cleaning = root.findtext(".//I_002/PreCleaning", default="")
             asset = root.findtext(".//A_002/Pipe_Segment_Reference", default="")
             upstream_mh = root.findtext(".//A_002/Upstream_AP", default="")
             downstream_mh = root.findtext(".//A_002/Downstream_AP", default="")
-            
-            
+
+            raw_date = root.findtext(".//I_002/Inspection_Timestamp", default="")
+            if raw_date:
+                try:
+                    # Extract only the YYYY-MM-DD part (remove everything after 'T')
+                    date_part = raw_date.split("T")[0]
+
+                    # Convert to datetime and get the date part
+                    parsed_date = datetime.strptime(date_part, "%Y-%m-%d").date()
+
+                    # Format the date part as M/D/YYYY
+                    date = "{}/{}/{}".format(parsed_date.month, parsed_date.day, parsed_date.year)
+                    print(date)  # Example: 2/20/2025
+                except ValueError as e:
+                    print(f"⚠️ Error parsing date '{raw_date}': {e}")
+                    date = ""
+            else:
+                print("⚠️ No date found!")
+                date = ""
+                       
             height = root.findtext(".//A_002/Height", default="0")
             size = round(float(height) / 25.4, 2) if height else ""
 
