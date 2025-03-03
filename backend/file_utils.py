@@ -40,8 +40,6 @@ def update_xml_files(folder_path, updates):
                     updated |= update_elements(root_element, ".//I_002", updates)
 
 
-
-
                     # Step 1: Adjust <Distance> and <Length_Surveyed> when <Code> is "AMH"
                     for of_002 in root_element.findall(".//OF_002"):
                         code_element = of_002.find("Code")
@@ -68,7 +66,6 @@ def update_xml_files(folder_path, updates):
                                 except ValueError:
                                     print(f"⚠️ Could not parse <Distance> value in {file_path}")
 
-                    
                     
                     
                     # Background change: Modify <Material> if it exists
@@ -112,9 +109,7 @@ def update_xml_files(folder_path, updates):
                                     updated = True
 
 
-
                     # Iterate over all I_002 elements
-                    
                     # Background change: Remove <PO_Number> if it exists inside <I_002>
                     for i_002 in root_element.findall(".//I_002"):
                         po_number_element = i_002.find("PO_Number")
@@ -221,14 +216,7 @@ def update_xml_files(folder_path, updates):
                             comments_element.text = comment_text
                             updated = True
 
-
-
-
-
-
-
-
-                    
+                  
                     if updated:
                         # Backup the original file before saving changes
                         backup_path = file_path + ".bak"
