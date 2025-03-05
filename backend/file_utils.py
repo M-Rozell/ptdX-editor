@@ -40,27 +40,31 @@ def update_xml_files(folder_path, updates):
                     updated |= update_elements(root_element, ".//I_002", updates)
 
 
-                    # Step 1: Adjust <Distance> and <Length_Surveyed> when <Code> is "AMH"
+                    # Define the set of codes that require adjustment
+                    valid_codes = {"AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AEP", "AJB", 
+                                "AM", "AOC", "ATC", "AWA", "AWW", "AZ", "MSA"}
+
+                    # Step 1: Adjust <Distance> and <Length_Surveyed> for specific codes
                     for of_002 in root_element.findall(".//OF_002"):
                         code_element = of_002.find("Code")
                         distance_element = of_002.find("Distance")
 
                         if code_element is not None and distance_element is not None:
-                            if code_element.text.strip() == "AMH":
+                            code_value = code_element.text.strip()
+                            if code_value in valid_codes:  # Check if code is in the allowed set
                                 try:
                                     distance_value = float(distance_element.text.strip())
-                                    if distance_value > 0:
+                                    if distance_value > 0:  # Only adjust if distance is greater than 0
                                         adjusted_value = round(distance_value / 304.8) * 304.8
-                                        print(f"Updating <Distance> from {distance_value} to {adjusted_value} due to AMH in {file_path}")
+                                        print(f"Updating <Distance> from {distance_value} to {adjusted_value} in {file_path}")
                                         distance_element.text = str(adjusted_value)
 
                                         # Add the adjusted value to <Length_Surveyed>
                                         length_surveyed_element = root_element.find(".//I_002/Length_Surveyed")
                                         if length_surveyed_element is not None and length_surveyed_element.text:
                                             length_surveyed_value = float(length_surveyed_element.text.strip())
-                                            length_surveyed_value = adjusted_value
                                             print(f"Updating <Length_Surveyed> from {length_surveyed_value} to {adjusted_value} in {file_path}")
-                                            length_surveyed_element.text = str(length_surveyed_value)
+                                            length_surveyed_element.text = str(adjusted_value)
 
                                         updated = True
                                 except ValueError:
@@ -79,6 +83,20 @@ def update_xml_files(folder_path, updates):
                                     updated = True
                                 else:
                                     print(f"<Material> is not 'ZZZ' in {file_path}, skipping.")
+
+                    
+                    for a_002 in root_element.findall(".//A_002"):
+                        # Check if <Material> exists
+                        material_element = a_002.find("Material")
+                        material_value = material_element.text if material_element is not None else ""
+
+                        # Determine if <Material> is "XXX" or has been changed to "XXX"
+                        if material_value == "XXX" or ("Material" in updates and updates["Material"] == "XXX"):
+                            pipe_joint_length_element = a_002.find("Pipe_Joint_Length")
+                            if pipe_joint_length_element is not None:
+                                print(f"Removing <Pipe_Joint_Length> because <Material> is 'XXX' in {file_path}")
+                                a_002.remove(pipe_joint_length_element)
+                                updated = True
 
 
                     # Background change: Handle <Lining_Method> based on <Material> inside <A_002>
@@ -110,8 +128,8 @@ def update_xml_files(folder_path, updates):
 
 
                     # Iterate over all I_002 elements
-                    # Background change: Remove <PO_Number> if it exists inside <I_002>
                     for i_002 in root_element.findall(".//I_002"):
+                        # Background change: Remove <PO_Number> if it exists inside <I_002>
                         po_number_element = i_002.find("PO_Number")
                         if po_number_element is not None:
                             print(f"Removing <PO_Number> from {file_path}")
@@ -138,6 +156,23 @@ def update_xml_files(folder_path, updates):
                                     updated = True
                             else:
                                 print(f"⚠️ <{key}> not found in {file_path}, skipping.")
+
+                        # Ensure <Purpose> exists with default "G" if missing
+                        purpose_element = i_002.find("Purpose")
+                        if purpose_element is None:
+                            purpose_element = ET.Element("Purpose")
+                            purpose_element.text = "G"
+                            i_002.append(purpose_element)
+                            print(f"Adding <Purpose> with default value 'G' in {file_path}")
+                            updated = True
+
+                        # Apply user updates (if Purpose is provided in the form, overwrite it)
+                        if "Purpose" in updates:  # updates comes from the request
+                            new_purpose_value = updates["Purpose"]
+                            if purpose_element.text != new_purpose_value:
+                                print(f"Updating <Purpose> to '{new_purpose_value}' in {file_path}")
+                                purpose_element.text = new_purpose_value
+                                updated = True
 
 
 
