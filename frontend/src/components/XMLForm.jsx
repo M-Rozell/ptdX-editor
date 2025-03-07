@@ -108,11 +108,11 @@ const XMLForm = ({ folderPath }) => {
 
 
   return (
-    <div>
+    <div className="editFilesWrap">
       <h2 className="editFilesHeader">Edit Files</h2>
       {Object.keys(formData).map((key) => (
         <div key={key} className="inputName">
-          <label>{key}:</label>
+          
           {/* Conditionally render dropdown for specific keys */}
           {key === "Pipe_Use" ? (
             <select
@@ -144,6 +144,7 @@ const XMLForm = ({ folderPath }) => {
             <input
               type="text"
               name={key}
+              placeholder={key}
               value={formData[key]}
               onChange={handleChange}
             />

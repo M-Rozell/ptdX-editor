@@ -29,8 +29,9 @@ def list_files():
     if not project_folder or not os.path.isdir(project_folder):
         return jsonify({'error': 'Invalid project folder path'}), 400
 
-    file_list = find_ptdx_files(project_folder)
-    return jsonify({'files': file_list}), 200
+    file_list = find_ptdx_files(project_folder)  # Expecting a list of file paths
+
+    return jsonify({'files': [os.path.basename(path) for path in file_list]}), 200
 
 
 

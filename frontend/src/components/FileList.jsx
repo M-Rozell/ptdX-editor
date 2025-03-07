@@ -1,7 +1,7 @@
 const FileList = ({ files }) => {
     return (
-      <div>
-        <h2 className="filesHeader">Files</h2>
+      <div className="fileListDiv">
+        
         <ol className="fileList">
           {files.map((file, index) => (
             <li key={index}>{file}</li>

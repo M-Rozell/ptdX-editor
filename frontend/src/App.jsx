@@ -46,15 +46,26 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h1 className="ptdXHeader">.ptdX editor</h1>
-      <div className="btnDiv">
-      <button onClick={handleFolderSelection} className="folderSelectionBtn">Load</button>
+    <div className="appDiv">
+      
+      <h1 className="ptdXHeader">.ptdX Editor</h1>
+      <div className="wrapDiv">
+
+      
+        <div className="filesLoadListDiv">    
+            <button onClick={handleFolderSelection} className="folderSelectionBtn">Load Files</button>
+            <FileList files={files} />
+            <button onClick={handleClearList} className="folderSelectionBtn" id="clearFolder">Clear Files</button>
+        </div>
+             
+              <div className="xmlFormDiv">
+                <XMLForm folderPath={folderPath} />
+              </div>
+        
       </div>
-      <XMLForm folderPath={folderPath} />
-      <FileList files={files} />
-      <button onClick={handleClearList} className="folderSelectionBtn">Clear Files</button>
+      
     </div>
+    
   );
 };
 
