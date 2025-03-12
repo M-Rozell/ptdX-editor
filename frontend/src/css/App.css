@@ -1,7 +1,7 @@
 body,html {
   margin: 0;
   padding: 0;
-  background: #1C2321;
+  background: #0b0530;
 }
 
 * {
@@ -19,16 +19,16 @@ body,html {
 }
 
 .ptdXHeader {
-  color: white;
+  color: #a5fd02;
   font-family: 'Segoe UI', sans-serif;
   font-weight: 100;
   font-size: 2rem;
   text-align: center;
   padding: .5rem;
   margin: 0;
-  background-color: rgb(101, 106, 113);
+  background-color: #0b0530;
   border-width: .025rem .025rem 0 .025rem ;
-  border-color: rgb(249, 250, 249);
+  border-color: #fd0273;
   border-style: solid;
 }
 
@@ -36,8 +36,8 @@ body,html {
 .wrapDiv {
   padding-top: 1rem;
   display: flex;
-  border: .08rem solid rgb(249, 250, 249);
-  background: linear-gradient(#f9f9f9, #f7f7f7) no-repeat center/.04rem 100%;
+  border: .08rem solid #fd0273;
+  background: linear-gradient(#fd0273, #fd0273) no-repeat center/.04rem 100%;
 }
 
 
@@ -53,9 +53,10 @@ body,html {
   cursor: pointer;
   width: 75%;
   padding: .5rem;
-  background: #1C2321;
-  border: .025rem solid #f9f9f9;
-  color: #FFFFE8;
+  background: #0b0530;
+  border: .025rem solid #fd0273;
+  color: #a5fd02;
+  font-size: 1rem;
   cursor: pointer;
   line-height: 1.3;
 }
@@ -65,7 +66,7 @@ body,html {
 }
 
 .folderSelectionBtn:not(:disabled):hover:active {
-  transform: scale(1.05) translateY(.125rem);
+  transform: scale(1.05) translateY(.25rem);
 }
 
 #clearFolder {
@@ -117,7 +118,6 @@ li {
   text-align: center;
   margin: 0;
   padding: 0;
-  color: #FFFFE8;
   font-family: 'Segoe UI', sans-serif;
   width: 100%;
   line-height: 1.5rem;
@@ -127,21 +127,24 @@ li {
 input {
   height: 2rem;
   width: 75%;
-  margin-left: .25rem;
-  background-color: #FFFFE8;
+  background: #0b0530;
+  border: .025rem solid #fd0273;
   box-sizing: border-box;
 }
 
 input::placeholder {
   font-weight: 100;
-  color: rgb(5, 5, 5);
+  color: #a5fd02;
+  font-size: .9rem;
 }
 
 select{
   height: 1.75rem;
   width: 75%;
-  margin-left: .25rem;
-  background-color: #FFFFE8;
+  font-size: .9rem;
+  color: #a5fd02;
+  border: .025rem solid #fd0273;
+  background-color: #0b0530;
   box-sizing: border-box;
 }
 
@@ -150,23 +153,24 @@ select{
 }
 
 .bottomBtns {
-  margin: .25rem;
+  margin: .4rem;
   margin-top: .5rem;
   margin-bottom: 1.5rem;
-  background: #1C2321;
-  border: .025rem solid #f9f9f9;
-  color: #FFFFE8;
+  background: #0b0530;
+  border: .025rem solid #fd0273;
+  color: #a5fd02;
+  font-size: .8rem;
   cursor: pointer;
   line-height: 1.3;
-  padding: .3rem .5rem;
+  padding: .3rem 1rem;
 }
 
 .bottomBtns:not(:disabled):hover {
-  transform: scale(1.05);
+  transform: scale(1.15);
 }
 
 .bottomBtns:not(:disabled):hover:active {
-  transform: scale(1.05) translateY(.125rem);
+  transform: scale(1.05) translateY(.25rem);
 }
 
 

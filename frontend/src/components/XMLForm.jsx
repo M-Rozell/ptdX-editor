@@ -99,7 +99,7 @@ const XMLForm = ({ folderPath }) => {
       Pipe_Use: "",
       Customer: "",
       Project: "",
-      WorkOrder: "",
+      Work_Order: "",
       Purpose: "",
     });
     console.log("🧹 Form cleared!");

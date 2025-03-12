@@ -234,7 +234,8 @@ def update_xml_files(folder_path, updates):
                                 continue
 
                             # Handle Start Inspection Comment
-                            if code_value == "AMH" and distance_value == 0:
+                            if code_value in ["AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AJB", 
+                                "AM", "AOC", "ATC", "AWA", "AWW", "AZ"] and distance_value == 0:
                                 comment_text = f"Start Inspection {start_mh}"
                             # Handle End Inspection Comment
                             elif code_value in ["AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AEP", "AJB", 
