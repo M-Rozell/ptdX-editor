@@ -8,7 +8,6 @@ body,html {
   box-sizing: border-box;
 }
 
-
 #root {
   margin: 0;
   padding: 0;
@@ -105,15 +104,6 @@ li {
   padding: 0;
 }
 
-.editFilesHeader{
-  text-align: center;
-  margin-top: 0;
-  font-family: 'Segoe UI', sans-serif;
-  font-weight: 100;
-  color: #1C2321;
-}
-
-
 .inputName{
   text-align: center;
   margin: 0;
@@ -150,12 +140,13 @@ select{
 
 .bottomBtnsDiv {
   text-align: center;
+  margin: auto;
+  margin-bottom: 1.5rem;
 }
 
 .bottomBtns {
-  margin: .4rem;
+  margin: .5rem;
   margin-top: .5rem;
-  margin-bottom: 1.5rem;
   background: #0b0530;
   border: .025rem solid #fd0273;
   color: #a5fd02;

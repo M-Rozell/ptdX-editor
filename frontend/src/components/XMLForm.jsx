@@ -109,7 +109,6 @@ const XMLForm = ({ folderPath }) => {
 
   return (
     <div className="editFilesWrap">
-      <h2 className="editFilesHeader">Edit Files</h2>
       {Object.keys(formData).map((key) => (
         <div key={key} className="inputName">
           
