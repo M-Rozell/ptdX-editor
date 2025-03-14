@@ -18,7 +18,7 @@ body,html {
 }
 
 .ptdXHeader {
-  color: #a5fd02;
+  color: #34ff0e;
   font-family: 'Segoe UI', sans-serif;
   font-weight: 100;
   font-size: 2rem;
@@ -27,7 +27,7 @@ body,html {
   margin: 0;
   background-color: #0b0530;
   border-width: .025rem .025rem 0 .025rem ;
-  border-color: #fd0273;
+  border-color: #fa008a;
   border-style: solid;
 }
 
@@ -35,8 +35,8 @@ body,html {
 .wrapDiv {
   padding-top: 1rem;
   display: flex;
-  border: .08rem solid #fd0273;
-  background: linear-gradient(#fd0273, #fd0273) no-repeat center/.04rem 100%;
+  border: .08rem solid #fa008a;
+  background: linear-gradient(#fa008a, #fa008a) no-repeat center/.04rem 100%;
 }
 
 
@@ -47,14 +47,16 @@ body,html {
 
 
 .folderSelectionBtn {
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 100;
   display: block;
   margin: auto;
   cursor: pointer;
   width: 75%;
   padding: .5rem;
   background: #0b0530;
-  border: .025rem solid #fd0273;
-  color: #a5fd02;
+  border: .025rem solid #fa008a;
+  color: #34ff0e;
   font-size: 1rem;
   cursor: pointer;
   line-height: 1.3;
@@ -104,38 +106,50 @@ li {
   padding: 0;
 }
 
-.inputName{
+.inputName {
   text-align: center;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  width: 100%;
   line-height: 1.5rem;
   margin-bottom: .5rem;
 }
 
 input {
+  padding: .5rem;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 100;
+  font-size: 1rem;
   height: 2rem;
   width: 75%;
   background: #0b0530;
-  border: .025rem solid #fd0273;
+  border: .025rem solid #fa008a;
   box-sizing: border-box;
 }
 
 input::placeholder {
+  font-family: 'Segoe UI', sans-serif;
   font-weight: 100;
-  color: #a5fd02;
-  font-size: .9rem;
+  color: #FFFFE8;
+  font-size: 1rem;
 }
 
-select{
+select {
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 100;
   height: 1.75rem;
   width: 75%;
-  font-size: .9rem;
-  color: #a5fd02;
-  border: .025rem solid #fd0273;
+  font-size: 1rem;
+  color: #FFFFE8;
+  border: .025rem solid #fa008a;
   background-color: #0b0530;
   box-sizing: border-box;
+}
+
+option {
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 100;
+  color: #02fdd7;
+  background-color: #0b0530;
 }
 
 .bottomBtnsDiv {
@@ -145,12 +159,14 @@ select{
 }
 
 .bottomBtns {
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 100;
+  font-size: .9rem;
   margin: .5rem;
   margin-top: .5rem;
   background: #0b0530;
-  border: .025rem solid #fd0273;
-  color: #a5fd02;
-  font-size: .8rem;
+  border: .025rem solid #fa008a;
+  color: #34ff0e; 
   cursor: pointer;
   line-height: 1.3;
   padding: .3rem 1rem;

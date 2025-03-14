@@ -3,10 +3,10 @@ import React, { useState } from "react";
 const XMLForm = ({ folderPath }) => {
   const [formData, setFormData] = useState({
     Owner: "",
-    Pipe_Use: "",
     Customer: "",
     Project: "",
     WorkOrder: "",
+    Pipe_Use: "",
     Purpose: "",
   });
 
@@ -96,10 +96,10 @@ const XMLForm = ({ folderPath }) => {
   const handleClear = () => {
     setFormData({
       Owner: "",
-      Pipe_Use: "",
       Customer: "",
       Project: "",
       Work_Order: "",
+      Pipe_Use: "",
       Purpose: "",
     });
     console.log("🧹 Form cleared!");
