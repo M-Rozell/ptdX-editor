@@ -115,6 +115,7 @@ li {
 }
 
 input {
+  color: #FFFFE8;
   padding: .5rem;
   font-family: 'Segoe UI', sans-serif;
   font-weight: 100;

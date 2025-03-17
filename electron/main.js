@@ -21,7 +21,7 @@ function createWindow() {
       mainWindow = null;
     });
   } catch (error) {
-    console.error("❌ Error creating window:", error);
+    console.error("Error creating window:", error);
   }
 }
 
@@ -33,12 +33,12 @@ ipcMain.handle("open-folder-dialog", async () => {
     });
     
     if (!canceled && filePaths.length > 0) {
-      console.log("📂 Folder Selected:", filePaths[0]); // Debugging
+      console.log("Folder Selected:", filePaths[0]); // Debugging
       return filePaths[0];
     }
     return canceled ? null : filePaths[0];
   } catch (error) {
-    console.error("❌ Error opening folder dialog:", error);
+    console.error("Error opening folder dialog:", error);
   }
 });
 
@@ -62,10 +62,10 @@ ipcMain.handle("export-data", async (_, folderPath) => {
 
     // Save the file
     fs.writeFileSync(filePath, Buffer.from(buffer));
-    console.log(`✅ Export successful: ${filePath}`);
+    console.log(`Export successful: ${filePath}`);
     return filePath;
   } catch (error) {
-    console.error("❌ Export error:", error);
+    console.error("Export error:", error);
     return null;
   }
 });
@@ -75,7 +75,7 @@ ipcMain.handle("export-data", async (_, folderPath) => {
 // Electron app lifecycle
 app.whenReady()
   .then(createWindow)
-  .catch((error) => console.error("❌ Error during app initialization:", error));
+  .catch((error) => console.error("Error during app initialization:", error));
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

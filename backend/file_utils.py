@@ -31,7 +31,7 @@ def update_xml_files(folder_path, updates):
                     root_element = tree.getroot()
 
                     updated = False
-                    print(f"🔍 Processing {file_path}...")
+                    print(f"Processing {file_path}...")
 
                     # Update elements inside <A_002>
                     updated |= update_elements(root_element, ".//A_002", updates)
@@ -68,7 +68,7 @@ def update_xml_files(folder_path, updates):
 
                                         updated = True
                                 except ValueError:
-                                    print(f"⚠️ Could not parse <Distance> value in {file_path}")
+                                    print(f"Could not parse <Distance> value in {file_path}")
 
                     
                     
@@ -155,7 +155,7 @@ def update_xml_files(folder_path, updates):
                                     element.text = value
                                     updated = True
                             else:
-                                print(f"⚠️ <{key}> not found in {file_path}, skipping.")
+                                print(f"<{key}> not found in {file_path}, skipping.")
 
                         # Ensure <Purpose> exists with default "G" if missing
                         purpose_element = i_002.find("Purpose")
@@ -216,7 +216,7 @@ def update_xml_files(folder_path, updates):
                             try:
                                 distance_value = float(distance_element.text.strip())
                             except ValueError:
-                                print(f"⚠️ Could not parse <Distance> value in {file_path}")
+                                print(f"Could not parse <Distance> value in {file_path}")
                                 continue  # Skip this entry if Distance is invalid
 
                             # Determine correct manhole based on Direction
@@ -230,7 +230,7 @@ def update_xml_files(folder_path, updates):
                                 start_mh = downstream_mh
                                 end_mh = upstream_mh
                             else:
-                                print(f"⚠️ Unknown Direction '{direction_value}' in {file_path}, skipping.")
+                                print(f"Unknown Direction '{direction_value}' in {file_path}, skipping.")
                                 continue
 
                             # Handle Start Inspection Comment
@@ -268,12 +268,12 @@ def update_xml_files(folder_path, updates):
                         
                         tree.write(file_path)  # Save updated XML back to file
                         updated_files.append(file_path)
-                        print(f"✅ File {file_path} updated!")
+                        print(f"File {file_path} updated!")
                     else:
-                        print(f"⚠️ No updates made for {file_path}")
+                        print(f"No updates made for {file_path}")
 
                 except Exception as e:
-                    print(f"⚠️ Error processing {file_path}: {str(e)}")              
+                    print(f"Error processing {file_path}: {str(e)}")              
     
     return updated_files
 
@@ -304,9 +304,9 @@ def update_elements(parent_element, parent_tag, updates):
                         element.text = updates[key]  # Update the element value
                         updated = True
                     else:
-                        print(f"⚠️ {key} is already the same. No update needed.")
+                        print(f"{key} is already the same. No update needed.")
                 else:
-                    print(f"⚠️ No element found for {key} inside {parent_tag}")
+                    print(f"No element found for {key} inside {parent_tag}")
 
     return updated
 

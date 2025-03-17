@@ -5,7 +5,6 @@ import "./css/App.css"
 
 
 
-
 const App = () => {
   const [folderPath, setFolderPath] = useState("");
   const [files, setFiles] = useState([]);
@@ -17,7 +16,7 @@ const App = () => {
       try {
         const selectedFolder = await window.electronAPI.openFolderDialog();
         if (selectedFolder) {
-          console.log("📂 Selected Folder:", selectedFolder); // Debugging
+          console.log("Selected Folder:", selectedFolder); // Debugging
           setFolderPath(selectedFolder);
   
           fetch("http://localhost:5000/list-files", {
@@ -27,16 +26,16 @@ const App = () => {
           })
             .then(res => res.json())
             .then(data => {
-              console.log("📄 Files found:", data.files); // Debugging
+              console.log("Files found:", data.files); // Debugging
               setFiles(data.files);
             })
-            .catch(err => console.error("❌ Error fetching files:", err));
+            .catch(err => console.error("Error fetching files:", err));
         }
       } catch (error) {
-        console.error("❌ Error selecting folder:", error);
+        console.error("Error selecting folder:", error);
       }
     } else {
-      console.error("❌ window.electronAPI is not defined");
+      console.error("window.electronAPI is not defined");
     }
   };
 
@@ -49,20 +48,19 @@ const App = () => {
     <div className="appDiv">
       
       <h1 className="ptdXHeader">.ptdX Editor</h1>
-      <div className="wrapDiv">
+        <div className="wrapDiv">
 
-      
-        <div className="filesLoadListDiv">    
-            <button onClick={handleFolderSelection} className="folderSelectionBtn">Load Files</button>
-            <FileList files={files} />
-            <button onClick={handleClearList} className="folderSelectionBtn" id="clearFolder">Clear Files</button>
+          <div className="filesLoadListDiv">    
+              <button onClick={handleFolderSelection} className="folderSelectionBtn">Load Files</button>
+              <FileList files={files} />
+              <button onClick={handleClearList} className="folderSelectionBtn" id="clearFolder">Clear Files</button>
+          </div>
+              
+                <div className="xmlFormDiv">
+                  <XMLForm folderPath={folderPath} />
+                </div>
+          
         </div>
-             
-              <div className="xmlFormDiv">
-                <XMLForm folderPath={folderPath} />
-              </div>
-        
-      </div>
       
     </div>
     

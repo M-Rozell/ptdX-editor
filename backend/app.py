@@ -88,10 +88,10 @@ def export_to_excel():
                     date = "{}/{}/{}".format(parsed_date.month, parsed_date.day, parsed_date.year)
                     print(date)  # Example: 2/20/2025
                 except ValueError as e:
-                    print(f"⚠️ Error parsing date '{raw_date}': {e}")
+                    print(f"Error parsing date '{raw_date}': {e}")
                     date = ""
             else:
-                print("⚠️ No date found!")
+                print("No date found!")
                 date = ""
                        
             height = root.findtext(".//A_002/Height", default="0")
@@ -112,7 +112,7 @@ def export_to_excel():
             ])
 
         except Exception as e:
-            print(f"⚠️ Error processing {file_path}: {str(e)}")
+            print(f"Error processing {file_path}: {str(e)}")
 
     # Create a DataFrame and save as Excel
     df = pd.DataFrame(extracted_data, columns=[

@@ -2,10 +2,10 @@ import React, { useState } from "react";
 
 const XMLForm = ({ folderPath }) => {
   const [formData, setFormData] = useState({
+    WorkOrder: "",
     Owner: "",
     Customer: "",
     Project: "",
-    WorkOrder: "",
     Pipe_Use: "",
     Purpose: "",
   });
@@ -17,20 +17,11 @@ const XMLForm = ({ folderPath }) => {
   };
 
   // Define options for Pipe_Use and Purpose dropdowns
-  //SS=Sanitary Sewage Pipe
-  //SW=Stormwater Pipe
   const pipeUseOptions = [
     { value: "SS", description: "Sanitary Sewage Pipe" },
     { value: "SW", description: "Stormwater Pipe" },
   ];
-  //A=Maintenance Related
-  //B=Infiltration/Inflow Investigation
-  //C=Post Rehabilitation Survey
-  //D=Pre-Rehabilitation Survey
-  //E=Pre-Acceptance New Sewers
-  //F=Routine Assessment
-  //G=Capital Improvement Program Assessment
-  //H=Resurvey For Any Reason
+ 
   const purposeOptions = [
     { value: "A", description: "Maintenance Related" },
     { value: "B", description: "Infiltration/Inflow Investigation" },
@@ -39,8 +30,7 @@ const XMLForm = ({ folderPath }) => {
     { value: "E", description: "Pre-Acceptance New Sewers" },
     { value: "F", description: "Routine Assessment" },
     { value: "G", description: "Capital Improvement Program Assessment" },
-    { value: "H", description: "Resurvey For Any Reason" },
-    
+    { value: "H", description: "Resurvey For Any Reason" },  
   ];
   
   
@@ -55,9 +45,9 @@ const XMLForm = ({ folderPath }) => {
       Object.entries(formData).filter(([_, value]) => value !== "")
     );
 
-    console.log("📡 Sending update request with:");
-    console.log("📂 Folder Path:", folderPath);
-    console.log("📝 Updates:", updates); // Log the form data
+    console.log("Sending update request with:");
+    console.log("Folder Path:", folderPath);
+    console.log("Updates:", updates); // Log the form data
 
     
     
@@ -67,8 +57,8 @@ const XMLForm = ({ folderPath }) => {
       body: JSON.stringify({ folderPath, updates: updates, }),
     })
       .then((res) => res.json())
-      .then((data) => console.log("✅ Update Success:", data))
-      .catch((err) => console.error("❌ Error updating files:", err));
+      .then((data) => console.log("Update Success:", data))
+      .catch((err) => console.error("Error updating files:", err));
   };
 
 
@@ -82,12 +72,12 @@ const XMLForm = ({ folderPath }) => {
     try {
       const filePath = await window.electronAPI.exportData(folderPath);
       if (filePath) {
-        console.log(`✅ Exported file saved at: ${filePath}`);
+        console.log(`Exported file saved at: ${filePath}`);
       } else {
-        console.error("❌ Export failed.");
+        console.error("Export failed.");
       }
     } catch (error) {
-      console.error("❌ Error exporting:", error);
+      console.error("Error exporting:", error);
     } finally {
       setExporting(false);
     }
@@ -95,14 +85,14 @@ const XMLForm = ({ folderPath }) => {
 
   const handleClear = () => {
     setFormData({
+      Work_Order: "",
       Owner: "",
       Customer: "",
       Project: "",
-      Work_Order: "",
       Pipe_Use: "",
       Purpose: "",
     });
-    console.log("🧹 Form cleared!");
+    console.log("Form cleared!");
   };
 
 
