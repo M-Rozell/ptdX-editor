@@ -14,6 +14,6 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      'fs': false,  // Prevents Vite from trying to bundle `fs`
+      'fs': false,  // Prevents Vite from trying to bundle Node.js' fs module,fs is a built-in Node.js module, which does not exist in the browser
     }},
 });

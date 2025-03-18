@@ -6,11 +6,11 @@ import "./css/App.css"
 
 
 const App = () => {
+  
   const [folderPath, setFolderPath] = useState("");
   const [files, setFiles] = useState([]);
 
-  
-  
+    
   const handleFolderSelection = async () => {
     if (window.electronAPI) {
       try {
@@ -45,18 +45,18 @@ const App = () => {
   }
 
   return (
-    <div className="appDiv">
+    <div className="appWrapper">
       
       <h1 className="ptdXHeader">.ptdX Editor</h1>
-        <div className="wrapDiv">
+        <div className="filesFormWrapper">
 
-          <div className="filesLoadListDiv">    
+          <div className="filesWrapper">    
               <button onClick={handleFolderSelection} className="folderSelectionBtn">Load Files</button>
               <FileList files={files} />
               <button onClick={handleClearList} className="folderSelectionBtn" id="clearFolder">Clear Files</button>
           </div>
               
-                <div className="xmlFormDiv">
+                <div className="formWrapper">
                   <XMLForm folderPath={folderPath} />
                 </div>
           

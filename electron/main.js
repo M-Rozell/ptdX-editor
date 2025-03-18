@@ -55,7 +55,7 @@ ipcMain.handle("export-data", async (_, folderPath) => {
       throw new Error("Failed to export data.");
     }
 
-    // Get the file as a blob
+    // Get the file as a BLOB (binary large object)
     const buffer = await response.arrayBuffer();
     const fs = require("fs");
     const filePath = path.join(folderPath, "export.xlsx");

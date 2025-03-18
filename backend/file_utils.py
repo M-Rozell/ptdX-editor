@@ -31,7 +31,6 @@ def update_xml_files(folder_path, updates):
                     root_element = tree.getroot()
 
                     updated = False
-                    print(f"Processing {file_path}...")
 
                     # Update elements inside <A_002>
                     updated |= update_elements(root_element, ".//A_002", updates)
@@ -44,7 +43,7 @@ def update_xml_files(folder_path, updates):
                     valid_codes = {"AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AEP", "AJB", 
                                 "AM", "AOC", "ATC", "AWA", "AWW", "AZ", "MSA"}
 
-                    # Step 1: Adjust <Distance> and <Length_Surveyed> for specific codes
+                    # Adjust <Distance> and <Length_Surveyed> for specific codes
                     for of_002 in root_element.findall(".//OF_002"):
                         code_element = of_002.find("Code")
                         distance_element = of_002.find("Distance")
@@ -54,8 +53,8 @@ def update_xml_files(folder_path, updates):
                             if code_value in valid_codes:  # Check if code is in the allowed set
                                 try:
                                     distance_value = float(distance_element.text.strip())
-                                    if distance_value > 0:  # Only adjust if distance is greater than 0
-                                        adjusted_value = round(distance_value / 304.8) * 304.8
+                                    if distance_value > 0:  
+                                        adjusted_value = round(distance_value / 304.8) * 304.8 # Convert from Metric to Imperial and Round
                                         print(f"Updating <Distance> from {distance_value} to {adjusted_value} in {file_path}")
                                         distance_element.text = str(adjusted_value)
 
@@ -93,7 +92,7 @@ def update_xml_files(folder_path, updates):
                         # Determine if <Material> is "XXX" or has been changed to "XXX"
                         if material_value == "XXX" or ("Material" in updates and updates["Material"] == "XXX"):
                             pipe_joint_length_element = a_002.find("Pipe_Joint_Length")
-                            if pipe_joint_length_element is not None:
+                            if pipe_joint_length_element is not None: # If Material is "XXX" remove joint length
                                 print(f"Removing <Pipe_Joint_Length> because <Material> is 'XXX' in {file_path}")
                                 a_002.remove(pipe_joint_length_element)
                                 updated = True
@@ -202,7 +201,7 @@ def update_xml_files(folder_path, updates):
                                     updated = True
 
 
-                    # Step 2: Update <Comments> based on <Code>, <Distance>, and <Direction>
+                    # Update <Comments> based on <Code>, <Distance>, and <Direction>
                     direction_element = root_element.find(".//I_002/Direction")
                     direction_value = direction_element.text.strip() if direction_element is not None else ""
 
@@ -236,11 +235,11 @@ def update_xml_files(folder_path, updates):
                             # Handle Start Inspection Comment
                             if code_value in ["AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AJB", 
                                 "AM", "AOC", "ATC", "AWA", "AWW", "AZ"] and distance_value == 0:
-                                comment_text = f"Start Inspection {start_mh}"
+                                comment_text = f"Start Inspection: {start_mh}"
                             # Handle End Inspection Comment
                             elif code_value in ["AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AEP", "AJB", 
                                 "AM", "AOC", "ATC", "AWA", "AWW", "AZ"] and distance_value > 0:
-                                comment_text = f"End Inspection {end_mh}"
+                                comment_text = f"End Inspection: {end_mh}"
                             else:
                                 continue  # Skip if no matching condition
 

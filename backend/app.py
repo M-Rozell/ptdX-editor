@@ -94,12 +94,14 @@ def export_to_excel():
                 print("No date found!")
                 date = ""
                        
+            # Convert from Metric to Imperial
             height = root.findtext(".//A_002/Height", default="0")
             size = round(float(height) / 25.4, 2) if height else ""
 
             length_surveyed = root.findtext(".//I_002/Length_Surveyed", default="0")
             distance = round(float(length_surveyed) / 304.8, 2) if length_surveyed else ""
 
+            # Grab comments where MSA is present
             msa_comments = ""
             for of_002 in root.findall(".//OF_002"):
                 code = of_002.findtext("Code", default="")
@@ -123,9 +125,6 @@ def export_to_excel():
     df.to_excel(export_path, index=False)
 
     return send_file(export_path, as_attachment=True)
-
-
-
 
 
 

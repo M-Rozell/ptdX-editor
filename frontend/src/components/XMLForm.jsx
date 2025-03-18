@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 const XMLForm = ({ folderPath }) => {
+  
   const [formData, setFormData] = useState({
     WorkOrder: "",
     Owner: "",
@@ -98,7 +99,7 @@ const XMLForm = ({ folderPath }) => {
 
 
   return (
-    <div className="editFilesWrap">
+    <div>
       {Object.keys(formData).map((key) => (
         <div key={key} className="inputName">
           
@@ -140,7 +141,7 @@ const XMLForm = ({ folderPath }) => {
           )}
         </div>
       ))}
-      <div className="bottomBtnsDiv">
+      <div className="bottomBtnsWrapper">
       <button onClick={handleSubmit} className="bottomBtns">Save Changes</button>
       <button onClick={handleExport} className="bottomBtns" disabled={exporting}>
         {exporting ? "Exporting..." : "Export"}

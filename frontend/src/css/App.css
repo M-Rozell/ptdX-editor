@@ -13,7 +13,7 @@ body,html {
   padding: 0;
 }
 
-.appDiv {
+.appWrapper{
   display: contents;
 }
 
@@ -32,7 +32,7 @@ body,html {
 }
 
 
-.wrapDiv {
+.filesFormWrapper {
   padding-top: 1rem;
   display: flex;
   border: .08rem solid #fa008a;
@@ -40,7 +40,7 @@ body,html {
 }
 
 
-.filesLoadListDiv {
+.filesWrapper {
   height: 100%;
   width: 50%;
 }
@@ -94,16 +94,11 @@ li {
 
 
 
-.xmlFormDiv {
+.formWrapper {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 50%;
-}
-
-.editFilesDiv {
-  margin: 0;
-  padding: 0;
 }
 
 .inputName {
@@ -153,7 +148,7 @@ option {
   background-color: #0b0530;
 }
 
-.bottomBtnsDiv {
+.bottomBtnsWrapper{
   text-align: center;
   margin: auto;
   margin-bottom: 1.5rem;
