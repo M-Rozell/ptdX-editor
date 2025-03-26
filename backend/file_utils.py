@@ -173,6 +173,45 @@ def update_xml_files(folder_path, updates):
                                 purpose_element.text = new_purpose_value
                                 updated = True
 
+                         # Ensure <WorkOrder> exists if missing
+                        work_order_element = i_002.find("WorkOrder")
+                        if work_order_element is None:
+                            work_order_element = ET.Element("WorkOrder")
+                            work_order_element.text = updates.get("WorkOrder", "")  # Use provided value or empty string
+                            i_002.append(work_order_element)
+                            print(f"Adding <WorkOrder> with value '{work_order_element.text}' in {file_path}")
+                            updated = True
+                        elif "WorkOrder" in updates and work_order_element.text != updates["WorkOrder"]:
+                            print(f"Updating <WorkOrder> to '{updates['WorkOrder']}' in {file_path}")
+                            work_order_element.text = updates["WorkOrder"]
+                            updated = True
+
+                        # Apply user updates (if WorkOrder is provided in the form, overwrite it)
+                        if "WorkOrder" in updates:  # updates comes from the request
+                            new_work_order_value = updates["WorkOrder"]
+                            if work_order_element.text != new_work_order_value:
+                                print(f"Updating <WorkOrder> to '{new_work_order_value}' in {file_path}")
+                                work_order_element.text = new_work_order_value
+                                updated = True
+
+
+                        # Ensure <Pipe_Use> exists with default "G" if missing
+                        pipeUse_element = a_002.find("Pipe_Use")
+                        if pipeUse_element is None:
+                            pipeUse_element = ET.Element("Pipe_Use")
+                            pipeUse_element.text = "SS"
+                            a_002.append(pipeUse_element)
+                            print(f"Adding <Pipe_Use> with default value 'G' in {file_path}")
+                            updated = True
+
+                        # Apply user updates (if Pipe_Use is provided in the form, overwrite it)
+                        if "Pipe_Use" in updates:  # updates comes from the request
+                            new_pipeUse_value = updates["Pipe_Use"]
+                            if pipeUse_element.text != new_pipeUse_value:
+                                print(f"Updating <Pipe_Use> to '{new_pipeUse_value}' in {file_path}")
+                                pipeUse_element.text = new_pipeUse_value
+                                updated = True
+
 
 
                     # Background change: Update <Total_Length> with <Length_Surveyed> if "MSA" is NOT in <Code>
