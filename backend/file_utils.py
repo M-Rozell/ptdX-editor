@@ -194,6 +194,27 @@ def update_xml_files(folder_path, updates):
                                 work_order_element.text = new_work_order_value
                                 updated = True
 
+                                # Ensure <Project> exists if missing
+                        project_element = i_002.find("Project")
+                        if project_element is None:
+                            project_element = ET.Element("Project")
+                            project_element.text = updates.get("Project", "")  # Use provided value or empty string
+                            i_002.append(project_element)
+                            print(f"Adding <Project> with value '{project_element.text}' in {file_path}")
+                            updated = True
+                        elif "Project" in updates and project_element.text != updates["Project"]:
+                            print(f"Updating <Project> to '{updates['Project']}' in {file_path}")
+                            project_element.text = updates["Project"]
+                            updated = True
+
+                        # Apply user updates (if Project is provided in the form, overwrite it)
+                        if "Project" in updates:  # updates comes from the request
+                            new_project_value = updates["Project"]
+                            if project_element.text != new_project_value:
+                                print(f"Updating <Project> to '{new_project_value}' in {file_path}")
+                                project_element.text = new_project_value
+                                updated = True
+
 
                         # Ensure <Pipe_Use> exists with default "G" if missing
                         pipeUse_element = a_002.find("Pipe_Use")
