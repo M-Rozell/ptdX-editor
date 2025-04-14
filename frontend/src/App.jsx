@@ -1,73 +1,137 @@
 import React, { useState } from "react";
-import FileList from "./components/FileList";
-import XMLForm from "./components/XMLForm";
+import FileListMainline from "./components/FileListMainline";
+import XMLFormMainline from "./components/XMLFormMainline";
+import FileListLateral from "./components/FileListLateral";
+import XMLFormLateral from "./components/XMLFormLateral";
 import "./css/App.css"
 
-
-
-const App = () => {
   
-  const [folderPath, setFolderPath] = useState("");
-  const [files, setFiles] = useState([]);
+  const App = () => {
+    const [folderPath, setFolderPath] = useState("");
+    const [files, setFiles] = useState([]);
+    const [folderPathLateral, setFolderPathLateral] = useState("");
+    const [filesLateral, setFilesLateral] = useState([]);
+    const [showMainline, setShowMainline] = useState(false)
+    const [showLateral, setShowLateral] = useState(false);
+    const [updatedFiles, setUpdatedFiles] = useState([]);
+    const [updatedFilesLateral, setUpdatedFilesLateral] = useState([]);
 
-    
-  const handleFolderSelection = async () => {
-    if (window.electronAPI) {
-      try {
-        const selectedFolder = await window.electronAPI.openFolderDialog();
-        if (selectedFolder) {
-          console.log("Selected Folder:", selectedFolder); // Debugging
-          setFolderPath(selectedFolder);
+    const handleMainlineClick = () => {
+      setShowMainline(true);
+      setShowLateral(false);
+    };
+
+    const handleLateralClick = () => {
+      setShowLateral(true);
+      setShowMainline(false);
+    };
+    const countFoundFiles = files.length;
+    const countFoundFilesLateral = filesLateral.length;
+    const countUpdatedFiles = updatedFiles.length;
+    const countUpdatedFilesLateral = updatedFilesLateral.length; 
+
+    return (
+      <div>
+        
+        <header>
+            <h1 className="ptdXHeader">.ptdX Editor</h1>
+          <div className="headerBtns">
+            <button type="button" 
+                    className="folderSelectionBtn" 
+                    onClick={handleMainlineClick}
+                    style={{ backgroundColor: showMainline ? "#FFFFE8" : "#303030",
+                    color: showMainline ? "#050505" : "#FFFFE8" }}>
+              Mainline
+            </button>
+            <button type="button" 
+                    className="folderSelectionBtn" 
+                    onClick={handleLateralClick}
+                    style={{ backgroundColor: showLateral ? "#FFFFE8" : "#303030",
+                    color: showLateral ? "#050505" : "#FFFFE8" }}>
+              Lateral
+            </button>
+          </div>
+        </header>
   
-          fetch("http://localhost:5000/list-files", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ folderPath: selectedFolder }),
-          })
-            .then(res => res.json())
-            .then(data => {
-              console.log("Files found:", data.files); // Debugging
-              setFiles(data.files);
-            })
-            .catch(err => console.error("Error fetching files:", err));
-        }
-      } catch (error) {
-        console.error("Error selecting folder:", error);
-      }
-    } else {
-      console.error("window.electronAPI is not defined");
-    }
+        <main className="filesFormWrapper">    
+          <section>
+          {showMainline &&
+              <div className="editFilesWrapper"> 
+                <div className="filesWrapper">
+                  <section aria-labelledby="form-title">
+                      <FileListMainline 
+                        folderPath={folderPath} 
+                        setFolderPath={setFolderPath}
+                        files={files}
+                        setFiles={setFiles}
+                        setUpdatedFiles={setUpdatedFiles} 
+                      />
+                    </section>
+                </div>
+                  
+                <div className="formWrapper">
+                  <section aria-labelledby="form-title">
+                      <XMLFormMainline 
+                      folderPath={folderPath}
+                      updatedFiles={updatedFiles}
+                      setUpdatedFiles={setUpdatedFiles}
+                      />
+                  </section>
+                </div>
+              </div>}
+          </section>
+            
+          <section>
+          {showLateral &&
+            <div className="editFilesWrapper">   
+                <div className="filesWrapper">
+                  <section aria-labelledby="form-title">
+                    <FileListLateral
+                      folderPathLateral={folderPathLateral} 
+                      setFolderPathLateral={setFolderPathLateral}
+                      filesLateral={filesLateral}
+                      setFilesLateral={setFilesLateral}
+                      setUpdatedFilesLateral={setUpdatedFilesLateral}
+                    />
+                  </section>
+                </div>
+
+                <div className="formWrapper">
+                  <section aria-labelledby="form-title">
+                    <XMLFormLateral 
+                    folderPathLateral={folderPathLateral}
+                    updatedFilesLateral={updatedFilesLateral}
+                    setUpdatedFilesLateral={setUpdatedFilesLateral}
+                     />
+                  </section>
+                </div>                 
+            </div>}
+          </section>
+       
+        </main>
+        
+        
+        <footer>          
+          <section>Selected Folder: {showMainline && <span>{folderPath}</span>}             
+                                    {showLateral && <span>{folderPathLateral}</span>}
+            </section>  
+
+          <section>Files Found: {showMainline && <span>{countFoundFiles}</span>}           
+                                {showLateral && <span>{countFoundFilesLateral}</span>}
+            </section>
+  
+          <section>Files Updated: {showMainline && <span>{countUpdatedFiles}</span>}
+                                  {showLateral && <span>{countUpdatedFilesLateral}</span>}
+          </section> 
+      
+        </footer>      
+      
+      </div>
+    );
   };
 
-
-  const handleClearList = () => {
-    setFiles([])
-  }
-
-  return (
-    <div className="appWrapper">
-      
-      <h1 className="ptdXHeader">.ptdX Editor</h1>
-        <div className="filesFormWrapper">
-
-          <div className="filesWrapper">    
-              <button onClick={handleFolderSelection} className="folderSelectionBtn">Load Files</button>
-              <FileList files={files} />
-              <button onClick={handleClearList} className="folderSelectionBtn" id="clearFolder">Clear Files</button>
-          </div>
-              
-                <div className="formWrapper">
-                  <XMLForm folderPath={folderPath} />
-                </div>
-          
-        </div>
-      
-    </div>
-    
-  );
-};
-
-export default App;
+  
+  export default App;
 
 
 
