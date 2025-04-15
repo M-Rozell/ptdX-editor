@@ -7,7 +7,7 @@ function createWindow() {
   try {
     mainWindow = new BrowserWindow({
       width: 950,
-      height: 500,
+      height: 505,
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
         contextIsolation: true, // Keep security best practices

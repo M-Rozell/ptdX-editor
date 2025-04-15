@@ -116,10 +116,10 @@ import "./css/App.css"
           <section className="footerText">Selected Folder: {showMainline && <span>{folderPath}</span>}             
                                     {showLateral && <span>{folderPathLateral}</span>}
           </section>  
-          <section>Files Found: {showMainline && <span style={{color: countFoundFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>{countFoundFiles}</span>}           
+          <section className="footerText">Files Found: {showMainline && <span style={{color: countFoundFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>{countFoundFiles}</span>}           
                                 {showLateral && <span style={{color: countFoundFilesLateral > 0 ? "#02fdd7" : "#FFFFE8"}}>{countFoundFilesLateral}</span>}
           </section> 
-          <section>Files Updated: {showMainline && <span style={{color: countUpdatedFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>{countUpdatedFiles}</span>}
+          <section className="footerText">Files Updated: {showMainline && <span style={{color: countUpdatedFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>{countUpdatedFiles}</span>}
                                   {showLateral && <span style={{color: countUpdatedFilesLateral > 0 ? "#02fdd7" : "#FFFFE8"}}>{countUpdatedFilesLateral}</span>}
           </section>       
         </footer>      

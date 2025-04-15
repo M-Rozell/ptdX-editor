@@ -106,7 +106,7 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
                 value={formData[key]}
                 onChange={handleChange}
               >
-                <option value="">Select Pipe Use</option>
+                <option value=""></option>
                 {pipeUseOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.description}
@@ -120,7 +120,7 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
                 value={formData[key]}
                 onChange={handleChange}
               >
-                <option value="">Select Purpose</option>
+                <option value=""></option>
                 {purposeOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.description}
