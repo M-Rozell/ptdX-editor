@@ -19,8 +19,17 @@ body,html {
 
 header {
   display: flex;
-  border: .08rem solid #c1c2c1;
-  border-image: linear-gradient(to top, #585454 0%, #fa008a 100%) 1;
+  border-radius: .5rem .5rem 0 0;
+  position: relative;
+}
+header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: .05rem .125rem .09rem .1rem; /* border length  */
+  background: linear-gradient(#fa008a,#585454);
+  border-radius: inherit;
+  mask: conic-gradient(#000 0 0) content-box exclude,conic-gradient(#000 0 0);
 }
 
 .ptdXHeader {
@@ -36,15 +45,17 @@ header {
 
 .headerBtns {
   margin-left: auto;
-  margin-right: 1rem;
+  margin-right: 1.25rem;
   display: flex;
   align-items: center;
+  z-index: 2;
 }
 
 fieldset{ 
   padding: 0%;
   margin: 0%;
   border: none;
+  z-index: 2;
 }
 
 legend {
@@ -53,13 +64,23 @@ legend {
 }
 
 .filesFormWrapper {
-  padding-bottom: .5rem;
   display: flex;
   flex-direction: column;
-  border: .08rem solid;
-  border-image: linear-gradient(to top, #fa008a 0%, #585454 100%) 1;
+  border-radius: 0 0 .5rem .5rem ;
+  position: relative;
   background: linear-gradient(#585454, #fa008a) no-repeat center/.04rem 100%;
+  z-index: 1;
 }
+.filesFormWrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 0 .125rem .05rem .1rem; /* border length  */
+  background: linear-gradient(#585454,#fa008a);
+  border-radius: inherit;
+  mask: conic-gradient(#000 0 0) content-box exclude,conic-gradient(#000 0 0);
+}
+
  .editFilesWrapper {
   display: flex;
  }
@@ -96,12 +117,13 @@ legend {
   background: #303030;
   border: .025rem solid #585454;
   cursor: pointer;
+  z-index: 2;
 }
 .folderSelectionBtn:not(:disabled):hover {
   transform: scale(1.05);
 }
 .folderSelectionBtn:not(:disabled):hover:active {
-  transform: scale(1.05) translateY(.25rem);
+  transform: scale(1.05) translateY(.05rem);
 }
 
 ol {
@@ -112,13 +134,13 @@ ol {
   border-width: .025rem;
   background-color: #303030;
   overflow-y: scroll;
-  scrollbar-color: #fa008a rgb(23, 43, 65);  
+  scrollbar-color: #fa008a #585454;  
 }
 
 .loading {
   font-family: 'Segoe UI', sans-serif;
   font-weight: 100;
-  font-size: .75rem;
+  font-size: 1rem;
   color: #02fdd7;
 }
 
@@ -126,7 +148,7 @@ li {
   margin-bottom: .35rem;
   font-family: 'Segoe UI', sans-serif;
   font-weight: 100;
-  font-size: .75rem;
+  font-size: .8rem;
   color: #FFFFE8;
   word-wrap: break-word;
   overflow-wrap: break-word
@@ -159,7 +181,7 @@ form{
 .inputWrapper select, 
 .inputWrapper input {
   margin: 0;
-  flex: .65; /* Input takes up 2 parts of the space */
+  flex: .75; /* Input takes up 2 parts of the space */
   font-family: 'Segoe UI', sans-serif;
   font-weight: 100;
   height: 1.75rem;
@@ -167,6 +189,7 @@ form{
   color: #FFFFE8;
   border: .025rem solid #928b8b;
   background-color: #303030;
+  z-index: 2;
 }
 
 
@@ -178,9 +201,9 @@ option {
 }
 
 .bottomBtnsWrapper {
-  margin-left: 1rem;
-  margin-top: 1.5rem;
-  text-align: left;
+  margin-right: 1.25rem;
+  margin-top: 1rem;
+  text-align: right;
 }
 
 .bottomBtns {
@@ -193,7 +216,7 @@ option {
   color: #FFFFE8;
   background: #303030;
   border: .025rem solid #585454;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 .bottomBtns:not(:disabled):hover {
@@ -201,7 +224,7 @@ option {
 }
 
 .bottomBtns:not(:disabled):hover:active {
-  transform: scale(1.05) translateY(.25rem);
+  transform: scale(1.05) translateY(.05rem);
 }
 
 footer {
@@ -209,14 +232,22 @@ footer {
   display: block;
   font-family: 'Segoe UI', sans-serif;
   font-weight: 100;
-  font-size: 1rem;
-  border: .08rem solid #c1c2c1;
-  border-image: linear-gradient(to bottom, #585454 0%, #a3015a 100%) 1;
+  font-size: .9rem;
   color: #FFFFE8;
+  border-radius: 0 0 .5rem .5rem ;
+  position: relative;
 }
-.selectedFolderFooter {
-  display: flex;
-  flex-direction: column;
+footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 0 .1rem .08rem .1rem; /* border length  */
+  background: linear-gradient(#585454,#fa008a);
+  border-radius: inherit;
+  mask: conic-gradient(#000 0 0) content-box exclude,conic-gradient(#000 0 0);
 }
 
+.footerText {
+  margin-bottom: .125rem;
+}
 

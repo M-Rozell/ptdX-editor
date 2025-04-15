@@ -36,20 +36,21 @@ import "./css/App.css"
       <div>
         
         <header>
+          <div></div>
             <h1 className="ptdXHeader">.ptdX Editor</h1>
           <div className="headerBtns">
             <button type="button" 
                     className="folderSelectionBtn" 
                     onClick={handleMainlineClick}
-                    style={{ backgroundColor: showMainline ? "#FFFFE8" : "#303030",
-                    color: showMainline ? "#050505" : "#FFFFE8" }}>
+                    style={{ backgroundColor: showMainline ? "#585454" : "#303030",
+                    color: showMainline ? "#FFFFE8" : "#FFFFE8" }}>
               Mainline
             </button>
             <button type="button" 
                     className="folderSelectionBtn" 
                     onClick={handleLateralClick}
-                    style={{ backgroundColor: showLateral ? "#FFFFE8" : "#303030",
-                    color: showLateral ? "#050505" : "#FFFFE8" }}>
+                    style={{ backgroundColor: showLateral ? "#585454" : "#303030",
+                    color: showLateral ? "#FFFFE8" : "#FFFFE8" }}>
               Lateral
             </button>
           </div>
@@ -112,7 +113,7 @@ import "./css/App.css"
         
         
         <footer>          
-          <section>Selected Folder: {showMainline && <span>{folderPath}</span>}             
+          <section className="footerText">Selected Folder: {showMainline && <span>{folderPath}</span>}             
                                     {showLateral && <span>{folderPathLateral}</span>}
           </section>  
           <section>Files Found: {showMainline && <span style={{color: countFoundFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>{countFoundFiles}</span>}           
