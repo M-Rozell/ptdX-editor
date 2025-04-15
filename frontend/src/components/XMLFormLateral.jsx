@@ -92,7 +92,7 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
 
   return (
     <form onSubmit={handleSubmit} aria-labelledby="form-title">
-      <fieldset>
+      <fieldset className="formFieldset">
         <legend>Edit Lateral</legend>
         
         {Object.keys(formData).map((key) => (

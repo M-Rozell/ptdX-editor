@@ -37,7 +37,6 @@ import "./css/App.css"
         
         <header>
           <div></div>
-            <h1 className="ptdXHeader">.ptdX Editor</h1>
           <div className="headerBtns">
             <button type="button" 
                     className="folderSelectionBtn" 

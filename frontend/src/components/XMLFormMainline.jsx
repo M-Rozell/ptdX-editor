@@ -93,7 +93,7 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
 
   return (
     <form onSubmit={handleSubmit} aria-labelledby="form-title">
-      <fieldset>
+      <fieldset className="formFieldset">
         <legend>Edit Mainline</legend>
         
         {Object.keys(formData).map((key) => (

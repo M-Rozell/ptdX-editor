@@ -8,6 +8,15 @@ function createWindow() {
     mainWindow = new BrowserWindow({
       width: 950,
       height: 505,
+      // remove the default titlebar
+    titleBarStyle: 'hidden',
+    // expose window controlls in Windows/Linux
+    ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
+    titleBarOverlay: {
+      color: '#1c1c1c',
+    symbolColor: '#fa008a',
+    height: 8
+    },
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
         contextIsolation: true, // Keep security best practices
