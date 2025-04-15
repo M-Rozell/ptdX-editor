@@ -54,7 +54,6 @@ legend {
 }
 
 .filesFormWrapper {
-  margin-top: 1.5rem;
   padding-bottom: .5rem;
   display: flex;
   flex-direction: column;
@@ -110,7 +109,7 @@ legend {
 ol {
   margin: 1rem;
   padding: .5rem 0rem .5rem 1.75rem;
-  height: 25vh;
+  height: 45vh;
   border: solid #585454;
   border-width: .025rem;
   background-color: #303030;
