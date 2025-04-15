@@ -12,11 +12,7 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
   });
 
   const [exporting, setExporting] = useState(false); // Track export state
-  
-  
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+ 
 
   // Define options for Pipe_Use and Purpose dropdowns
   const pipeUseOptions = [
@@ -35,6 +31,9 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
     { value: "H", description: "Resurvey For Any Reason" },  
   ];
   
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
   
   const handleSubmit = () => {
     if (!folderPath) {
@@ -57,7 +56,6 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
       })
       .catch((err) => console.error("Error updating files:", err));
     };
-
 
   const handleExport = async () => {
     if (!folderPath) {
@@ -91,7 +89,6 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
     });
     console.log("Form cleared!");
   };
-
 
 
   return (
@@ -146,9 +143,9 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
       
       <div className="bottomBtnsWrapper">
         <button 
-        type="button"
-        onClick={handleSubmit} 
-        className="bottomBtns"
+          type="button"
+          onClick={handleSubmit} 
+          className="bottomBtns"
         >Save Changes</button>
         
         <button 
@@ -161,9 +158,9 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
           {exporting ? "Exporting..." : "Export"}
         </button>
         <button 
-        type="button" 
-        onClick={handleClear} 
-        className="bottomBtns"
+          type="button" 
+          onClick={handleClear} 
+          className="bottomBtns"
         >Clear</button>
       </div>
       

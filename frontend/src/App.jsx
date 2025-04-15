@@ -16,6 +16,11 @@ import "./css/App.css"
     const [updatedFiles, setUpdatedFiles] = useState([]);
     const [updatedFilesLateral, setUpdatedFilesLateral] = useState([]);
 
+    const countFoundFiles = files.length;
+    const countFoundFilesLateral = filesLateral.length;
+    const countUpdatedFiles = updatedFiles.length;
+    const countUpdatedFilesLateral = updatedFilesLateral.length;
+    
     const handleMainlineClick = () => {
       setShowMainline(true);
       setShowLateral(false);
@@ -25,10 +30,7 @@ import "./css/App.css"
       setShowLateral(true);
       setShowMainline(false);
     };
-    const countFoundFiles = files.length;
-    const countFoundFilesLateral = filesLateral.length;
-    const countUpdatedFiles = updatedFiles.length;
-    const countUpdatedFilesLateral = updatedFilesLateral.length; 
+     
 
     return (
       <div>
@@ -67,8 +69,7 @@ import "./css/App.css"
                         setUpdatedFiles={setUpdatedFiles} 
                       />
                     </section>
-                </div>
-                  
+                </div>                  
                 <div className="formWrapper">
                   <section aria-labelledby="form-title">
                       <XMLFormMainline 
@@ -95,7 +96,6 @@ import "./css/App.css"
                     />
                   </section>
                 </div>
-
                 <div className="formWrapper">
                   <section aria-labelledby="form-title">
                     <XMLFormLateral 
@@ -114,16 +114,13 @@ import "./css/App.css"
         <footer>          
           <section>Selected Folder: {showMainline && <span>{folderPath}</span>}             
                                     {showLateral && <span>{folderPathLateral}</span>}
-            </section>  
-
+          </section>  
           <section>Files Found: {showMainline && <span style={{color: countFoundFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>{countFoundFiles}</span>}           
                                 {showLateral && <span style={{color: countFoundFilesLateral > 0 ? "#02fdd7" : "#FFFFE8"}}>{countFoundFilesLateral}</span>}
-            </section>
-  
+          </section> 
           <section>Files Updated: {showMainline && <span style={{color: countUpdatedFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>{countUpdatedFiles}</span>}
                                   {showLateral && <span style={{color: countUpdatedFilesLateral > 0 ? "#02fdd7" : "#FFFFE8"}}>{countUpdatedFilesLateral}</span>}
-          </section> 
-      
+          </section>       
         </footer>      
       
       </div>

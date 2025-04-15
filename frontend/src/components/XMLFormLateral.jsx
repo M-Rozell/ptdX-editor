@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFilesLateral }) => {
@@ -14,12 +13,7 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
 
   const [exporting, setExporting] = useState(false); // Track export state
   
-  
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Define options for Pipe_Use and Purpose dropdowns
+  // Options for Pipe_Use and Purpose dropdowns
   const pipeUseOptions = [
     { value: "SS", description: "Sanitary Sewage Pipe" },
     { value: "SW", description: "Stormwater Pipe" },
@@ -36,6 +30,9 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
     { value: "H", description: "Resurvey For Any Reason" },  
   ];
   
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
   
   const handleSubmit = () => {
     if (!folderPathLateral) {
@@ -58,7 +55,6 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
       })
       .catch((err) => console.error("Error updating files:", err));
   };
-
 
   const handleExport = async () => {
     if (!folderPathLateral) {
@@ -92,7 +88,6 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
     });
     console.log("Form cleared!");
   };
-
 
 
   return (
@@ -147,9 +142,9 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
       
       <div className="bottomBtnsWrapper">
         <button 
-        type="button"
-        onClick={handleSubmit} 
-        className="bottomBtns"
+          type="button"
+          onClick={handleSubmit} 
+          className="bottomBtns"
         >Save Changes</button>
         
         <button 
@@ -162,9 +157,9 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
           {exporting ? "Exporting..." : "Export"}
         </button>
         <button 
-        type="button" 
-        onClick={handleClear} 
-        className="bottomBtns"
+          type="button" 
+          onClick={handleClear} 
+          className="bottomBtns"
         >Clear</button>
       </div>
       

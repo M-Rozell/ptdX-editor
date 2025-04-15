@@ -23,7 +23,7 @@ def find_ptdx_files(project_folder):
 
 
 def find_ptdx_lateral_files(project_folder):
-    """Recursively scans for .ptdX files that contain both A_002 and I_002 elements."""
+    """Recursively scans for .ptdX files that contain both A_003 and I_003 elements."""
     file_list_lateral = []
     for root, _, files in os.walk(project_folder):
         for file in files:
