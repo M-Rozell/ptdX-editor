@@ -8,6 +8,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({
       width: 950,
       height: 505,
+      icon: path.join(__dirname, '../assets/icon.ico'),
       // remove the default titlebar
     titleBarStyle: 'hidden',
     // expose window controlls in Windows/Linux

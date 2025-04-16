@@ -47,6 +47,16 @@ const FileListLateral = ({ folderPathLateral, setFolderPathLateral, filesLateral
       setFolderPathLateral("");
       setUpdatedFilesLateral([]);
     };
+
+    React.useEffect(() => {
+      if (!loading) return;
+    
+      const interval = setInterval(() => {
+        setLoadingDots(prev => (prev.length >= 5 ? "" : prev + "."));
+      }, 500);
+    
+      return () => clearInterval(interval);
+    }, [loading]);
   
     return (
       <div>
