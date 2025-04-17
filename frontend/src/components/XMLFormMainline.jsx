@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ExportModal from "./ExportModal";
 
 const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
   
@@ -11,7 +12,9 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
     Purpose: "",
   });
 
-  const [exporting, setExporting] = useState(false); // Track export state
+  const [exporting, setExporting] = useState(false); 
+  const [exportedFilePath, setExportedFilePath] = useState(null);
+  const [showModal, setShowModal] = useState(false);
  
 
   // Define options for Pipe_Use and Purpose dropdowns
@@ -68,6 +71,7 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
       const filePath = await window.electronAPI.exportData(folderPath);
       if (filePath) {
         console.log(`Exported file saved at: ${filePath}`);
+        setExportedFilePath(filePath);
       } else {
         console.error("Export failed.");
       }
@@ -75,8 +79,14 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
       console.error("Error exporting:", error);
     } finally {
       setExporting(false);
+      setShowModal(true);
     }
   };
+
+  const closeModal = () => {
+    setExportedFilePath(null);
+    setShowModal(false);
+  }
 
   const handleClear = () => {
     setFormData({
@@ -152,10 +162,8 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
           type="button" 
           onClick={handleExport} 
           className="bottomBtns" 
-          disabled={exporting}
           aria-live="polite"
-        >
-          {exporting ? "Exporting..." : "Export"}
+        >Export
         </button>
         <button 
           type="button" 
@@ -163,7 +171,13 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
           className="bottomBtns"
         >Clear</button>
       </div>
-      
+      {showModal && (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <ExportModal filePath={exportedFilePath} onClose={closeModal} />
+        </div>
+      </div>
+      )}
       </fieldset>
     </form>
   );

@@ -65,7 +65,7 @@ fieldset{
 } 
 
 legend {
-  padding: 1rem 1rem .5rem 1rem;
+  padding: .5rem 1rem .5rem 1rem;
   font-size: 0rem;
 }
 
@@ -177,10 +177,10 @@ form{
 
 .inputWrapper label {
   margin: .125rem .125rem .125rem .125rem;  
-  flex: .2;  /* Label takes up 1 part of the space */
+  flex: .17;  /* Label takes up 1 part of the space */
   font-family: 'Segoe UI', sans-serif;
   font-weight: 300;
-  font-size: 1rem;
+  font-size: .9rem;
   color: #FFFFE8;
 }
 
@@ -254,6 +254,65 @@ footer::before {
 }
 
 .footerText {
-  margin-bottom: .55rem;
+  margin-bottom: .7rem;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  padding: .25rem;
+  width: 50vw;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: rgb(252, 252, 236);
+  border: .125rem solid #fa008a;
+  border-radius: 1rem;
+  box-shadow: 0 0 5rem #fa008a;
+}
+
+
+ .exitModalBtn {
+  position: relative;
+  top: 0.2rem;
+  left: 13.5rem;
+  padding: 0.3rem;
+  cursor: pointer;
+  font-size: .75rem;
+  height: 1rem;              
+  width: 1rem;                    
+  overflow: hidden;         
+  border: none;
+  cursor: pointer;
+  background: none;
+ }
+ .exitModalBtn::after {
+  position: absolute;
+  line-height: 0.5;
+  top: 0.2rem;
+  left: 0.1rem;
+  text-indent: 0;
+  content: "✖";      
+}
+ .exitModalBtn:not(:disabled):hover {
+  transform: scale(1.5);
+}
+
+.modalFilePath {
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+}
+.modalFilePath:hover {
+  text-decoration: underline;
+  color: #134bf5;
+}

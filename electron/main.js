@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const path = require("path");
 
 let mainWindow;
@@ -34,6 +34,20 @@ function createWindow() {
     console.error("Error creating window:", error);
   }
 }
+
+ipcMain.handle("open-file", async (_event, filePath) => {
+  if (filePath) {
+    try {
+      const result = await shell.openPath(filePath);
+      if (result) {
+        console.error("Failed to open file:", result);
+      }
+    } catch (err) {
+      console.error("Error opening file:", err);
+    }
+  }
+  });
+
 
 // Register the IPC handler BEFORE app is ready
 ipcMain.handle("open-folder-dialog", async () => {
