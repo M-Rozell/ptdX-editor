@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import ExportModal from "./ExportModal";
+import React, { useState, lazy, Suspense } from "react";
+
+const ExportModal = lazy(() => import("./ExportModal"));
 
 const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFilesLateral }) => {
   
@@ -173,11 +174,13 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
       </div>
 
       {showModal && (
+        <Suspense fallback={<div>Loading Modal...</div>}>
       <div className="modal-overlay">
         <div className="modal-content">
           <ExportModal filePath={exportedFilePath} onClose={closeModal} />
         </div>
       </div>
+      </Suspense>
       )}
       
       </fieldset>

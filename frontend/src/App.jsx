@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import FileListMainline from "./components/FileListMainline";
-import XMLFormMainline from "./components/XMLFormMainline";
-import FileListLateral from "./components/FileListLateral";
-import XMLFormLateral from "./components/XMLFormLateral";
+import React, { useState, lazy, Suspense } from "react";
 import "./css/App.css"
+
+const FileListMainline = lazy(() => import("./components/FileListMainline"));
+const XMLFormMainline = lazy(() => import("./components/XMLFormMainline"));
+const FileListLateral = lazy(() => import("./components/FileListLateral"));
+const XMLFormLateral = lazy(() => import("./components/XMLFormLateral"));
+const FooterStatus = lazy(() => import("./components/footer"));
 
   
   const App = () => {
@@ -15,11 +17,6 @@ import "./css/App.css"
     const [showLateral, setShowLateral] = useState(false);
     const [updatedFiles, setUpdatedFiles] = useState([]);
     const [updatedFilesLateral, setUpdatedFilesLateral] = useState([]);
-
-    const countFoundFiles = files.length;
-    const countFoundFilesLateral = filesLateral.length;
-    const countUpdatedFiles = updatedFiles.length;
-    const countUpdatedFilesLateral = updatedFilesLateral.length;
     
     const handleMainlineClick = () => {
       setShowMainline(true);
@@ -33,8 +30,7 @@ import "./css/App.css"
      
 
     return (
-      <div>
-        
+      <div>       
         <header>
           <div></div>
           <div className="headerBtns">
@@ -58,6 +54,7 @@ import "./css/App.css"
         <main className="filesFormWrapper">    
           <section>
           {showMainline &&
+          <Suspense fallback={<div>Loading Mainline...</div>}>
               <div className="editFilesWrapper"> 
                 <div className="filesWrapper">
                   <section aria-labelledby="form-title">
@@ -79,11 +76,14 @@ import "./css/App.css"
                       />
                   </section>
                 </div>
-              </div>}
+              </div>
+              </Suspense>
+              }
           </section>
             
           <section>
           {showLateral &&
+          <Suspense fallback={<div>Loading Lateral...</div>}>
             <div className="editFilesWrapper">   
                 <div className="filesWrapper">
                   <section aria-labelledby="form-title">
@@ -105,24 +105,27 @@ import "./css/App.css"
                      />
                   </section>
                 </div>                 
-            </div>}
+            </div>
+            </Suspense>
+            }
           </section>
        
-        </main>
-        
-        
-        <footer>          
-          <section className="footerText">Selected Folder: {showMainline && <span>{folderPath}</span>}             
-                                    {showLateral && <span>{folderPathLateral}</span>}
-          </section>  
-          <section className="footerText">Files Found: {showMainline && <span style={{color: countFoundFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>{countFoundFiles}</span>}           
-                                {showLateral && <span style={{color: countFoundFilesLateral > 0 ? "#02fdd7" : "#FFFFE8"}}>{countFoundFilesLateral}</span>}
-          </section> 
-          <section className="footerText">Files Updated: {showMainline && <span style={{color: countUpdatedFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>{countUpdatedFiles}</span>}
-                                  {showLateral && <span style={{color: countUpdatedFilesLateral > 0 ? "#02fdd7" : "#FFFFE8"}}>{countUpdatedFilesLateral}</span>}
-          </section>       
-        </footer>      
-      
+        </main>          
+        {(showMainline || showLateral) && (
+              <Suspense fallback={<div>Loading footer...</div>}>
+                <FooterStatus
+                  showMainline={showMainline}
+                  folderPath={folderPath}
+                  files={files}
+                  updatedFiles={updatedFiles}
+                  showLateral={showLateral}
+                  folderPathLateral={folderPathLateral}
+                  filesLateral={filesLateral}
+                  updatedFilesLateral={updatedFilesLateral}
+                />
+              </Suspense>
+          )}       
+                  
       </div>
     );
   };
