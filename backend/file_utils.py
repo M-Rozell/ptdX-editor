@@ -215,12 +215,19 @@ def update_xml_files(folder_path, updates):
                             updated = True
 
                         # Apply user updates (if WorkOrder is provided in the form, overwrite it)
-                        if "WorkOrder" in updates:  # updates comes from the request
-                            new_work_order_value = updates["WorkOrder"]
-                            if work_order_element.text != new_work_order_value:
+                        if "WorkOrder" in updates and updates["WorkOrder"].strip():
+                            new_work_order_value = updates["WorkOrder"].strip()
+
+                            work_order_element = i_002.find("WorkOrder")
+                            if work_order_element is None:
+                                work_order_element = ET.Element("WorkOrder")
+                                i_002.append(work_order_element)
+                                print(f"Adding <WorkOrder> with value '{new_work_order_value}' in {file_path}")
+                            else:
                                 print(f"Updating <WorkOrder> to '{new_work_order_value}' in {file_path}")
-                                work_order_element.text = new_work_order_value
-                                updated = True
+
+                            work_order_element.text = new_work_order_value
+                            updated = True
 
                                 # Ensure <Project> exists if missing
                         project_element = i_002.find("Project")
@@ -575,12 +582,19 @@ def update_xml_files_lateral(folder_path, updates):
                             updated = True
 
                         # Apply user updates (if WorkOrder is provided in the form, overwrite it)
-                        if "WorkOrder" in updates:  # updates comes from the request
-                            new_work_order_value = updates["WorkOrder"]
-                            if work_order_element.text != new_work_order_value:
+                        if "WorkOrder" in updates and updates["WorkOrder"].strip():
+                            new_work_order_value = updates["WorkOrder"].strip()
+
+                            work_order_element = i_003.find("WorkOrder")
+                            if work_order_element is None:
+                                work_order_element = ET.Element("WorkOrder")
+                                i_003.append(work_order_element)
+                                print(f"Adding <WorkOrder> with value '{new_work_order_value}' in {file_path}")
+                            else:
                                 print(f"Updating <WorkOrder> to '{new_work_order_value}' in {file_path}")
-                                work_order_element.text = new_work_order_value
-                                updated = True
+
+                            work_order_element.text = new_work_order_value
+                            updated = True
 
                         # Ensure <Project> exists if missing
                         project_element = i_003.find("Project")
