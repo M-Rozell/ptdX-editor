@@ -1,7 +1,8 @@
 import React, { useState, lazy, Suspense } from "react";
 const ExportModal = lazy(() => import("./ExportModal"));
 
-const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
+const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) => {
+  
   
   const [formData, setFormData] = useState({
     WorkOrder: "",
@@ -34,9 +35,12 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
     { value: "H", description: "Resurvey For Any Reason" },  
   ];
   
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  
+  
   
   const handleSubmit = () => {
     if (!folderPath) {
@@ -48,6 +52,8 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
       Object.entries(formData).filter(([_, value]) => value !== "")
     );
 
+    setLoading(true);
+
     fetch("http://localhost:5000/update-files", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,7 +63,10 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
       .then((data) => { console.log("Update Success:", data)
         setUpdatedFiles(data.updated_files || []);
       })
-      .catch((err) => console.error("Error updating files:", err));
+      .catch((err) => console.error("Error updating files:", err))
+      .finally(() => {
+        setLoading(false);
+      });
     };
 
   const handleExport = async () => {
@@ -68,6 +77,7 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
   
     setExporting(true);
     try {
+      setShowModal(true);
       const filePath = await window.electronAPI.exportData(folderPath);
       if (filePath) {
         console.log(`Exported file saved at: ${filePath}`);
@@ -79,7 +89,6 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
       console.error("Error exporting:", error);
     } finally {
       setExporting(false);
-      setShowModal(true);
     }
   };
 
@@ -175,7 +184,11 @@ const XMLFormMainline = ({ folderPath, updatedFiles, setUpdatedFiles }) => {
         <Suspense fallback={<div>Loading Modal...</div>}>
       <div className="modal-overlay">
         <div className="modal-content">
-          <ExportModal filePath={exportedFilePath} onClose={closeModal} />
+          <ExportModal 
+          filePath={exportedFilePath} 
+          onClose={closeModal}
+          loading={exporting}
+          />
         </div>
       </div>
       </Suspense>

@@ -1,8 +1,11 @@
 import React from "react";
+import useLoadingDots from "./loadingDots";
 
-const ExportModal = ({ filePath, onClose }) => {
-  if (!filePath) return null;
+const ExportModal = ({ filePath, onClose, loading}) => {
+  const loadingDots = useLoadingDots(loading);
 
+  if (!filePath && !loading) return null;
+  
   const handleOpenLocation = async () => {
     if (filePath && window.electronAPI?.openFile) {
       try {
@@ -14,25 +17,24 @@ const ExportModal = ({ filePath, onClose }) => {
     }
   };
 
+  
+
   return (
-    <>
-        <button
-            type="button"
-            className="exitModalBtn"
-            onClick={onClose}
-          > 
-          </button>
-        <h2 className="">Export Successful!</h2>
-        <p className="">Your file was saved to:</p>
-            <div 
-                className="modalFilePath"
-                onClick={handleOpenLocation}>
-            {filePath}
+
+      <>
+        {loading ? (
+          <span className="exporting">Exporting{loadingDots}</span>
+        ) : (
+          <>
+          <button type="button" className="exitModalBtn" onClick={onClose}></button>
+            <h2 className="modalH2">Export Successful!</h2>
+            <p className="modalP">Your file was saved to:</p>
+            <div className="modalFilePath" onClick={handleOpenLocation}>
+              {filePath}
             </div>
-        <div>
-          
-        </div>
-    </>
+          </>
+        )}
+      </>
   );
 };
 

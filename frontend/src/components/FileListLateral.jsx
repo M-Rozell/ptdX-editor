@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import useLoadingDots from "./loadingDots";
 
 const FileListLateral = ({ folderPathLateral, setFolderPathLateral, filesLateral, setFilesLateral, setUpdatedFilesLateral }) => {
 
   const [loading, setLoading] = useState(false);
-  const [loadingDots, setLoadingDots] = useState(".");
   const [noFilesFound, setNoFilesFound] = useState(false);
+  const loadingDots = useLoadingDots(loading);
+  
 
     const handleFolderSelection = async () => {
       if (window.electronAPI) {
@@ -48,15 +50,6 @@ const FileListLateral = ({ folderPathLateral, setFolderPathLateral, filesLateral
       setUpdatedFilesLateral([]);
     };
 
-    React.useEffect(() => {
-      if (!loading) return;
-    
-      const interval = setInterval(() => {
-        setLoadingDots(prev => (prev.length >= 5 ? "" : prev + "."));
-      }, 500);
-    
-      return () => clearInterval(interval);
-    }, [loading]);
   
     return (
       <div>

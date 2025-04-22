@@ -158,10 +158,10 @@ ol {
   scrollbar-color: var(--pink) var(--lightGreyBorder);  
 }
 
-.loading {
+.loading, .updating {
   font-family: 'Segoe UI', sans-serif;
   font-weight: 100;
-  font-size: 1rem;
+  font-size: .75rem;
   color: var(--blue);
 }
 
@@ -286,14 +286,14 @@ footer::before {
 }
 
 .modal-content {
-  padding: .25rem;
+  padding: 1rem;
   width: 50vw;
   text-align: center;
   font-family: 'Segoe UI', sans-serif;
-  background-color: rgb(252, 252, 236);
+  background-color: var(--darkGrey);
   border: .125rem solid var(--pink);
   border-radius: 1rem;
-  box-shadow: 0 0 5rem var(--pink);
+  box-shadow: 0 0 1.5rem var(--pink);
 }
 
 
@@ -304,6 +304,7 @@ footer::before {
   padding: 0.3rem;
   cursor: pointer;
   font-size: .75rem;
+  color: var(--lightTxt);
   height: 1rem;              
   width: 1rem;                    
   overflow: hidden;         
@@ -323,11 +324,39 @@ footer::before {
   transform: scale(1.5);
 }
 
+.exporting {
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 500;
+  font-size: 1.5rem;
+  color: var(--lightTxt);
+}
+
+.modalH2 {
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+  font-size: 1.5rem;
+  color: var(--lightTxt);
+}
+
+.modalP {
+  margin: .5rem;
+  padding: 0;
+  font-weight: 400;
+  font-size: .95rem;
+  color: var(--lightTxt);
+}
+
 .modalFilePath {
+  margin-top: 1rem;
   margin-bottom: 1.5rem;
+  color: var(--lightTxt);
   cursor: pointer;
 }
 .modalFilePath:hover {
   text-decoration: underline;
   color: #134bf5;
 }
+
+
+

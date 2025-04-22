@@ -2,7 +2,7 @@ import React, { useState, lazy, Suspense } from "react";
 
 const ExportModal = lazy(() => import("./ExportModal"));
 
-const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFilesLateral }) => {
+const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, setLoading }) => {
   
   const [formData, setFormData] = useState({
     WorkOrder: "",
@@ -48,6 +48,8 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
       Object.entries(formData).filter(([_, value]) => value !== "")
     );
 
+    setLoading(true);
+
     fetch("http://localhost:5000/update-files-lateral", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,7 +59,10 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
       .then((data) => {console.log("Update Success:", data)
         setUpdatedFilesLateral(data.updated_files || []);
       })
-      .catch((err) => console.error("Error updating files:", err));
+      .catch((err) => console.error("Error updating files:", err))
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleExport = async () => {
@@ -177,7 +182,12 @@ const XMLFormLateral = ({ folderPathLateral, updatedFilesLateral, setUpdatedFile
         <Suspense fallback={<div>Loading Modal...</div>}>
       <div className="modal-overlay">
         <div className="modal-content">
-          <ExportModal filePath={exportedFilePath} onClose={closeModal} />
+          <ExportModal 
+          filePath={exportedFilePath} 
+          onClose={closeModal}
+          loading={loading} 
+          
+          />
         </div>
       </div>
       </Suspense>

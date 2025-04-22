@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import useLoadingDots from "./loadingDots";
 
 const FileListMainline = ({ folderPath, setFolderPath, files, setFiles, setUpdatedFiles }) => {
 
   const [loading, setLoading] = useState(false);
-  const [loadingDots, setLoadingDots] = useState(".");
   const [noFilesFound, setNoFilesFound] = useState(false);
+  const loadingDots = useLoadingDots(loading);
 
 
   const handleFolderSelection = async () => {
@@ -49,16 +50,6 @@ const FileListMainline = ({ folderPath, setFolderPath, files, setFiles, setUpdat
     setFolderPath("");
     setUpdatedFiles([]);
   };
-
-  React.useEffect(() => {
-  if (!loading) return;
-
-  const interval = setInterval(() => {
-    setLoadingDots(prev => (prev.length >= 5 ? "" : prev + "."));
-  }, 500);
-
-  return () => clearInterval(interval);
-}, [loading]);
 
 
   return (

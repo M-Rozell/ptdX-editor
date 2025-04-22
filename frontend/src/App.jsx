@@ -1,5 +1,6 @@
 import React, { useState, lazy, Suspense } from "react";
 import "./css/App.css"
+import useLoadingDots from "./components/loadingDots";
 
 const FileListMainline = lazy(() => import("./components/FileListMainline"));
 const XMLFormMainline = lazy(() => import("./components/XMLFormMainline"));
@@ -17,6 +18,10 @@ const FooterStatus = lazy(() => import("./components/footer"));
     const [showLateral, setShowLateral] = useState(false);
     const [updatedFiles, setUpdatedFiles] = useState([]);
     const [updatedFilesLateral, setUpdatedFilesLateral] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [loadingDots, setLoadingDots] = useLoadingDots(loading);
+
+    
     
     const handleMainlineClick = () => {
       setShowMainline(true);
@@ -73,6 +78,9 @@ const FooterStatus = lazy(() => import("./components/footer"));
                       folderPath={folderPath}
                       updatedFiles={updatedFiles}
                       setUpdatedFiles={setUpdatedFiles}
+                      loading={loading}
+                      setLoading={setLoading}
+                      setLoadingDots={setLoadingDots}
                       />
                   </section>
                 </div>
@@ -102,6 +110,9 @@ const FooterStatus = lazy(() => import("./components/footer"));
                     folderPathLateral={folderPathLateral}
                     updatedFilesLateral={updatedFilesLateral}
                     setUpdatedFilesLateral={setUpdatedFilesLateral}
+                    loading={loading}
+                    setLoading={setLoading}
+                    setLoadingDots={setLoadingDots}
                      />
                   </section>
                 </div>                 
@@ -122,6 +133,8 @@ const FooterStatus = lazy(() => import("./components/footer"));
                   folderPathLateral={folderPathLateral}
                   filesLateral={filesLateral}
                   updatedFilesLateral={updatedFilesLateral}
+                  loading={loading}
+                  loadingDots={loadingDots}
                 />
               </Suspense>
           )}       
