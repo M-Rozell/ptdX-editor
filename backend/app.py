@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import os
-from file_utils import find_ptdx_files, find_ptdx_lateral_files, update_xml_files, update_xml_files_lateral
+from Utils import find_ptdx_files, update_xml_files, find_ptdx_files_lateral, update_xml_files_lateral
 import xml.etree.ElementTree as ET
 import pandas as pd
 from datetime import datetime
@@ -45,7 +45,7 @@ def list_lateral_files():
     if not project_folder or not os.path.isdir(project_folder):
         return jsonify({'error': 'Invalid project folder path'}), 400
 
-    file_list_lateral = find_ptdx_lateral_files(project_folder)  # Expecting a list of file paths
+    file_list_lateral = find_ptdx_files_lateral(project_folder)  # Expecting a list of file paths
 
     return jsonify({'files': [os.path.basename(path) for path in file_list_lateral]}), 200
 

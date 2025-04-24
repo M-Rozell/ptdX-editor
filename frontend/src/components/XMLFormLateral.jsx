@@ -2,7 +2,7 @@ import React, { useState, lazy, Suspense } from "react";
 
 const ExportModal = lazy(() => import("./ExportModal"));
 
-const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, setLoading }) => {
+const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, loading, setLoading }) => {
   
   const [formData, setFormData] = useState({
     WorkOrder: "",
@@ -185,7 +185,7 @@ const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, setLoading 
           <ExportModal 
           filePath={exportedFilePath} 
           onClose={closeModal}
-          loading={loading} 
+          loading={exporting} 
           
           />
         </div>
