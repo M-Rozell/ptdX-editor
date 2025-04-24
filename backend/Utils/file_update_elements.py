@@ -2,14 +2,14 @@
 
 # Update ptdX files from form Inputs
 def update_elements(parent_element, parent_tag, updates):
-    """Updates specific XML elements inside <A_002> or <I_002>."""
+    """Updates specific XML elements inside <A_002> and <I_002> or <A_003> and <I_003>."""
     parent = parent_element.find(parent_tag)
     updated = False
 
     # Define the elements that we need to update
     elements_to_update = [
-        "Owner", "City", "Pipe_Use",  # Inside <A_002>
-        "Customer", "Project", "WorkOrder", "Purpose"  # Inside <I_002>
+        "Owner", "City", "Pipe_Use",  # Inside <A_002> or <A_003>
+        "Customer", "Project", "WorkOrder", "Purpose"  # Inside <I_002> or <I_003>
     ]
 
     if parent is not None:

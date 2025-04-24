@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 import xml.etree.ElementTree as ET
 from .file_update_elements import update_elements
+from .file_update_lateral_mh import update_lateral_mh
 
 
 # Find ptdX Lateral files
@@ -48,7 +49,9 @@ def update_xml_files_lateral(folder_path, updates):
 
                     # Update elements inside <I_003>
                     updated |= update_elements(root_element, ".//I_003", updates)
-                    
+
+                    update_lateral_mh(file_path)
+                                   
 
                     # Define the set of codes that require adjustment
                     valid_codes = {"AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AEP", "AJB", 
@@ -131,6 +134,7 @@ def update_xml_files_lateral(folder_path, updates):
                                     print(f"Removing <Lining_Method> because Material is '{material_value}' in {file_path}")
                                     a_003.remove(lining_method_element)
                                     updated = True
+
 
                     # Iterate over all I_003 elements
                     for i_003 in root_element.findall(".//I_003"):

@@ -29,5 +29,13 @@ project-root/
 
 
 
+C:\ProjectFolder\
+└── MainlineFolder\
+    ├── mainline_file.ptdX   ← contains <A_002> & <I_002>
+    └── LateralFolder\
+        └── lateral_file.ptdX  ← contains <A_003> & <I_003>
+
+
+
 
 
