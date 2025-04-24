@@ -78,7 +78,7 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) =>
     setExporting(true);
     try {
       setShowModal(true);
-      const filePath = await window.electronAPI.exportData(folderPath);
+      const filePath = await window.electronAPI.exportDataMainline(folderPath);
       if (filePath) {
         console.log(`Exported file saved at: ${filePath}`);
         setExportedFilePath(filePath);

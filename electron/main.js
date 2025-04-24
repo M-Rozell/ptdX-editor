@@ -66,10 +66,10 @@ ipcMain.handle("open-folder-dialog", async () => {
   }
 });
 
-
-ipcMain.handle("export-data", async (_, folderPath) => {
+// Export data mainline
+ipcMain.handle("export-data-mainline", async (_, folderPath) => {
   try {
-    const response = await fetch("http://localhost:5000/export", {
+    const response = await fetch("http://localhost:5000/export-mainline", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ folderPath }),
@@ -82,7 +82,36 @@ ipcMain.handle("export-data", async (_, folderPath) => {
     // Get the file as a BLOB (binary large object)
     const buffer = await response.arrayBuffer();
     const fs = require("fs");
-    const filePath = path.join(folderPath, "export.xlsx");
+    const filePath = path.join(folderPath, "export_mainline.xlsx");
+
+    // Save the file
+    fs.writeFileSync(filePath, Buffer.from(buffer));
+    console.log(`Export successful: ${filePath}`);
+    return filePath;
+  } catch (error) {
+    console.error("Export error:", error);
+    return null;
+  }
+});
+
+
+// Export data lateral
+ipcMain.handle("export-data-lateral", async (_, folderPath) => {
+  try {
+    const response = await fetch("http://localhost:5000/export-lateral", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ folderPath }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to export data.");
+    }
+
+    // Get the file as a BLOB (binary large object)
+    const buffer = await response.arrayBuffer();
+    const fs = require("fs");
+    const filePath = path.join(folderPath, "export_lateral.xlsx");
 
     // Save the file
     fs.writeFileSync(filePath, Buffer.from(buffer));

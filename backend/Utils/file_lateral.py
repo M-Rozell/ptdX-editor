@@ -1,4 +1,6 @@
 import os
+import pandas as pd
+from datetime import datetime
 import xml.etree.ElementTree as ET
 from .file_update_elements import update_elements
 
@@ -48,7 +50,6 @@ def update_xml_files_lateral(folder_path, updates):
                     updated |= update_elements(root_element, ".//I_003", updates)
                     
 
-
                     # Define the set of codes that require adjustment
                     valid_codes = {"AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AEP", "AJB", 
                                 "AM", "AOC", "ATC", "AWA", "AWW", "AZ", "MSA"}
@@ -78,9 +79,7 @@ def update_xml_files_lateral(folder_path, updates):
                                         updated = True
                                 except ValueError:
                                     print(f"Could not parse <Distance> value in {file_path}")
-
-                    
-                    
+                                   
                     # Background change: Modify <Material> if it exists
                     for model in root_element.findall(".//A_003"):
                         material_element = model.find("Material")
@@ -92,8 +91,7 @@ def update_xml_files_lateral(folder_path, updates):
                                     updated = True
                                 else:
                                     print(f"<Material> is not 'ZZZ' in {file_path}, skipping.")
-
-                    
+                   
                     for a_003 in root_element.findall(".//A_003"):
                         # Check if <Material> exists
                         material_element = a_003.find("Material")
@@ -106,7 +104,6 @@ def update_xml_files_lateral(folder_path, updates):
                                 print(f"Removing <Pipe_Joint_Length> because <Material> is 'XXX' in {file_path}")
                                 a_003.remove(pipe_joint_length_element)
                                 updated = True
-
 
                     # Background change: Handle <Lining_Method> based on <Material> inside <A_003>
                     for a_003 in root_element.findall(".//A_003"):
@@ -135,7 +132,6 @@ def update_xml_files_lateral(folder_path, updates):
                                     a_003.remove(lining_method_element)
                                     updated = True
 
-
                     # Iterate over all I_003 elements
                     for i_003 in root_element.findall(".//I_003"):
                         # Background change: Remove <PO_Number> if it exists inside <I_003>
@@ -144,7 +140,6 @@ def update_xml_files_lateral(folder_path, updates):
                             print(f"Removing <PO_Number> from {file_path}")
                             i_003.remove(po_number_element)
                             updated = True
-
 
                         # Background change: Ensure correct values for inspection technology elements inside <I_003>                    
                         technology_updates = {
@@ -249,9 +244,6 @@ def update_xml_files_lateral(folder_path, updates):
                                 pipeUse_element.text = new_pipeUse_value
                                 updated = True
 
-
-
-
                     if updated:
                         # Backup the original file before saving changes
                         backup_path = file_path + ".bak"
@@ -273,3 +265,80 @@ def update_xml_files_lateral(folder_path, updates):
                     print(f"Error processing {file_path}: {str(e)}")              
     
     return updated_files_lateral
+
+
+
+
+
+# Export Lateral data to Excel
+def export_lateral_to_excel(folder_path: str) -> str:
+    """Parses ptdX files and exports relevant lateral data to an Excel file."""
+    if not folder_path or not os.path.isdir(folder_path):
+        raise ValueError("Invalid folder path")
+
+    file_list = find_ptdx_files_lateral(folder_path)
+    extracted_data = []
+
+    for file_path in file_list:
+        try:
+            tree = ET.parse(file_path)
+            root = tree.getroot()
+            
+            file_name = os.path.basename(file_path)
+            name = root.findtext(".//I_003/Surveyed_By", default="")
+            direction = root.findtext(".//I_003/Direction", default="")
+            cleaning = root.findtext(".//I_003/PreCleaning", default="")
+            asset = root.findtext(".//A_003/Pipe_Segment_Reference", default="")
+            upstream_mh = root.findtext(".//A_003/Upstream_MH", default="")
+            downstream_mh = root.findtext(".//A_003/Downstream_MH", default="")
+
+            raw_date = root.findtext(".//I_003/Inspection_Timestamp", default="")
+            if raw_date:
+                try:
+                    # Extract only the YYYY-MM-DD part (remove everything after 'T')
+                    date_part = raw_date.split("T")[0]
+
+                    # Convert to datetime and get the date part
+                    parsed_date = datetime.strptime(date_part, "%Y-%m-%d").date()
+
+                    # Format the date part as M/D/YYYY
+                    date = "{}/{}/{}".format(parsed_date.month, parsed_date.day, parsed_date.year)
+                    print(date)  # Example: 2/20/2025
+                except ValueError as e:
+                    print(f"Error parsing date '{raw_date}': {e}")
+                    date = ""
+            else:
+                print("No date found!")
+                date = ""
+                       
+            # Convert from Metric to Imperial
+            height = root.findtext(".//A_003/Height", default="0")
+            size = round(float(height) / 25.4, 2) if height else ""
+
+            length_surveyed = root.findtext(".//I_003/Length_Surveyed", default="0")
+            distance = round(float(length_surveyed) / 304.8, 2) if length_surveyed else ""
+
+            # Grab comments where MSA is present
+            msa_comments = ""
+            for of_003 in root.findall(".//OF_003"):
+                code = of_003.findtext("Code", default="")
+                if code == "MSA":
+                    msa_comments = of_003.findtext("Comments", default="")
+                    break  # Use the first occurrence
+
+            extracted_data.append([
+                file_name, date, name, asset, upstream_mh, downstream_mh, size, distance, direction, msa_comments, cleaning
+            ])
+
+        except Exception as e:
+            print(f"Error processing {file_path}: {str(e)}")
+
+    # Create a DataFrame and save as Excel
+    df = pd.DataFrame(extracted_data, columns=[
+        "File Name", "Date", "Name", "Asset", "Upstream MH", "Downstream MH", "Size", "Distance", "Direction", "MSA", "Cleaning"
+    ])
+
+    export_path = os.path.join(folder_path, "export_lateral.xlsx")
+    df.to_excel(export_path, index=False)
+
+    return export_path

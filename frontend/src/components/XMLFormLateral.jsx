@@ -73,7 +73,8 @@ const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, loading, se
   
     setExporting(true);
     try {
-      const filePath = await window.electronAPI.exportData(folderPathLateral);
+      setShowModal(true);
+      const filePath = await window.electronAPI.exportDataLateral(folderPathLateral);
       if (filePath) {
         console.log(`Exported file saved at: ${filePath}`);
         setExportedFilePath(filePath);
@@ -84,7 +85,6 @@ const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, loading, se
       console.error("Error exporting:", error);
     } finally {
       setExporting(false);
-      setShowModal(true);
     }
   };
 

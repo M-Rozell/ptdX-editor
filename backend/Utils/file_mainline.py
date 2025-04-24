@@ -1,4 +1,6 @@
 import os
+import pandas as pd
+from datetime import datetime
 import xml.etree.ElementTree as ET
 from .file_update_elements import update_elements
 
@@ -26,7 +28,6 @@ def find_ptdx_files(project_folder):
 
 
 
-
 # Update ptdX Mainline files in the Background
 def update_xml_files(folder_path, updates):
     """Updates specified elements in all .ptdX files."""
@@ -47,7 +48,6 @@ def update_xml_files(folder_path, updates):
 
                     # Update elements inside <I_002>
                     updated |= update_elements(root_element, ".//I_002", updates)
-
 
                     # Define the set of codes that require adjustment
                     valid_codes = {"AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AEP", "AJB", 
@@ -78,9 +78,7 @@ def update_xml_files(folder_path, updates):
                                         updated = True
                                 except ValueError:
                                     print(f"Could not parse <Distance> value in {file_path}")
-
-                    
-                    
+                                       
                     # Background change: Modify <Material> if it exists
                     for model in root_element.findall(".//A_002"):
                         material_element = model.find("Material")
@@ -92,8 +90,7 @@ def update_xml_files(folder_path, updates):
                                     updated = True
                                 else:
                                     print(f"<Material> is not 'ZZZ' in {file_path}, skipping.")
-
-                    
+                   
                     for a_002 in root_element.findall(".//A_002"):
                         # Check if <Material> exists
                         material_element = a_002.find("Material")
@@ -106,7 +103,6 @@ def update_xml_files(folder_path, updates):
                                 print(f"Removing <Pipe_Joint_Length> because <Material> is 'XXX' in {file_path}")
                                 a_002.remove(pipe_joint_length_element)
                                 updated = True
-
 
                     # Background change: Handle <Lining_Method> based on <Material> inside <A_002>
                     for a_002 in root_element.findall(".//A_002"):
@@ -135,7 +131,6 @@ def update_xml_files(folder_path, updates):
                                     a_002.remove(lining_method_element)
                                     updated = True
 
-
                     # Iterate over all I_002 elements
                     for i_002 in root_element.findall(".//I_002"):
                         # Background change: Remove <PO_Number> if it exists inside <I_002>
@@ -144,7 +139,6 @@ def update_xml_files(folder_path, updates):
                             print(f"Removing <PO_Number> from {file_path}")
                             i_002.remove(po_number_element)
                             updated = True
-
 
                         # Background change: Ensure correct values for inspection technology elements inside <I_002>                    
                         technology_updates = {
@@ -232,7 +226,6 @@ def update_xml_files(folder_path, updates):
                                 project_element.text = new_project_value
                                 updated = True
 
-
                         # Ensure <Pipe_Use> exists with default "G" if missing
                         pipeUse_element = a_002.find("Pipe_Use")
                         if pipeUse_element is None:
@@ -249,8 +242,6 @@ def update_xml_files(folder_path, updates):
                                 print(f"Updating <Pipe_Use> to '{new_pipeUse_value}' in {file_path}")
                                 pipeUse_element.text = new_pipeUse_value
                                 updated = True
-
-
 
                     # Background change: Update <Total_Length> with <Length_Surveyed> if "MSA" is NOT in <Code>
                     code_elements = root_element.findall(".//OF_002/Code")
@@ -276,7 +267,6 @@ def update_xml_files(folder_path, updates):
                                     print(f"Updating <Total_Length> to '{length_surveyed_value}' because 'MSA' is not in <OF_002>/Code in {file_path}")
                                     total_length_element.text = length_surveyed_value
                                     updated = True
-
 
                     # Update <Comments> based on <Code>, <Distance>, and <Direction>
                     direction_element = root_element.find(".//I_002/Direction")
@@ -328,8 +318,7 @@ def update_xml_files(folder_path, updates):
                             print(f"Setting <Comments> to '{comment_text}' in {file_path}")
                             comments_element.text = comment_text
                             updated = True
-
-                  
+                 
                     if updated:
                         # Backup the original file before saving changes
                         backup_path = file_path + ".bak"
@@ -356,8 +345,78 @@ def update_xml_files(folder_path, updates):
 
 
 
+# Export Mainline data to Excel
+def export_mainline_to_excel(folder_path: str) -> str:
+    """Parses ptdX files and exports relevant mainline data to an Excel file."""
+    if not folder_path or not os.path.isdir(folder_path):
+        raise ValueError("Invalid folder path")
 
+    file_list = find_ptdx_files(folder_path)
+    extracted_data = []
 
+    for file_path in file_list:
+        try:
+            tree = ET.parse(file_path)
+            root = tree.getroot()
+            
+            file_name = os.path.basename(file_path)
+            name = root.findtext(".//I_002/Surveyed_By", default="")
+            direction = root.findtext(".//I_002/Direction", default="")
+            cleaning = root.findtext(".//I_002/PreCleaning", default="")
+            asset = root.findtext(".//A_002/Pipe_Segment_Reference", default="")
+            upstream_mh = root.findtext(".//A_002/Upstream_AP", default="")
+            downstream_mh = root.findtext(".//A_002/Downstream_AP", default="")
+
+            raw_date = root.findtext(".//I_002/Inspection_Timestamp", default="")
+            if raw_date:
+                try:
+                    # Extract only the YYYY-MM-DD part (remove everything after 'T')
+                    date_part = raw_date.split("T")[0]
+
+                    # Convert to datetime and get the date part
+                    parsed_date = datetime.strptime(date_part, "%Y-%m-%d").date()
+
+                    # Format the date part as M/D/YYYY
+                    date = "{}/{}/{}".format(parsed_date.month, parsed_date.day, parsed_date.year)
+                    print(date)  # Example: 2/20/2025
+                except ValueError as e:
+                    print(f"Error parsing date '{raw_date}': {e}")
+                    date = ""
+            else:
+                print("No date found!")
+                date = ""
+                       
+            # Convert from Metric to Imperial
+            height = root.findtext(".//A_002/Height", default="0")
+            size = round(float(height) / 25.4, 2) if height else ""
+
+            length_surveyed = root.findtext(".//I_002/Length_Surveyed", default="0")
+            distance = round(float(length_surveyed) / 304.8, 2) if length_surveyed else ""
+
+            # Grab comments where MSA is present
+            msa_comments = ""
+            for of_002 in root.findall(".//OF_002"):
+                code = of_002.findtext("Code", default="")
+                if code == "MSA":
+                    msa_comments = of_002.findtext("Comments", default="")
+                    break  # Use the first occurrence
+
+            extracted_data.append([
+                file_name, date, name, asset, upstream_mh, downstream_mh, size, distance, direction, msa_comments, cleaning
+            ])
+
+        except Exception as e:
+            print(f"Error processing {file_path}: {str(e)}")
+
+    # Create a DataFrame and save as Excel
+    df = pd.DataFrame(extracted_data, columns=[
+        "File Name", "Date", "Name", "Asset", "Upstream MH", "Downstream MH", "Size", "Distance", "Direction", "MSA", "Cleaning"
+    ])
+
+    export_path = os.path.join(folder_path, "export_mainline.xlsx")
+    df.to_excel(export_path, index=False)
+
+    return export_path
 
 
 

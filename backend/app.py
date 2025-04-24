@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import os
-from Utils import find_ptdx_files, update_xml_files, find_ptdx_files_lateral, update_xml_files_lateral
+from Utils import find_ptdx_files, update_xml_files, find_ptdx_files_lateral, update_xml_files_lateral, export_mainline_to_excel, export_lateral_to_excel
 import xml.etree.ElementTree as ET
 import pandas as pd
 from datetime import datetime
@@ -84,82 +84,36 @@ def update_files_lateral():
 
 
 
-
-@app.route('/export', methods=['POST'])
-def export_to_excel():
-    """Generates an Excel spreadsheet with data from all ptdX files."""
+@app.route('/export-mainline', methods=['POST'])
+def export_to_excel_mainline():
     data = request.json
     folder_path = data.get('folderPath')
 
-    if not folder_path or not os.path.isdir(folder_path):
-        return jsonify({'error': 'Invalid folder path'}), 400
+    try:
+        export_path = export_mainline_to_excel(folder_path)
+        return send_file(export_path, as_attachment=True)
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 400
+    except Exception as e:
+        return jsonify({'error': f"Export failed: {str(e)}"}), 500
+    
 
-    file_list = find_ptdx_files(folder_path)
-    extracted_data = []
 
-    for file_path in file_list:
-        try:
-            tree = ET.parse(file_path)
-            root = tree.getroot()
-            
-            file_name = os.path.basename(file_path)
-            name = root.findtext(".//I_002/Surveyed_By", default="")
-            direction = root.findtext(".//I_002/Direction", default="")
-            cleaning = root.findtext(".//I_002/PreCleaning", default="")
-            asset = root.findtext(".//A_002/Pipe_Segment_Reference", default="")
-            upstream_mh = root.findtext(".//A_002/Upstream_AP", default="")
-            downstream_mh = root.findtext(".//A_002/Downstream_AP", default="")
+@app.route('/export-lateral', methods=['POST'])
+def export_to_excel_lateral():
+    data = request.json
+    folder_path = data.get('folderPath')
 
-            raw_date = root.findtext(".//I_002/Inspection_Timestamp", default="")
-            if raw_date:
-                try:
-                    # Extract only the YYYY-MM-DD part (remove everything after 'T')
-                    date_part = raw_date.split("T")[0]
+    try:
+        export_path = export_lateral_to_excel(folder_path)
+        return send_file(export_path, as_attachment=True)
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 400
+    except Exception as e:
+        return jsonify({'error': f"Export failed: {str(e)}"}), 500
+    
 
-                    # Convert to datetime and get the date part
-                    parsed_date = datetime.strptime(date_part, "%Y-%m-%d").date()
 
-                    # Format the date part as M/D/YYYY
-                    date = "{}/{}/{}".format(parsed_date.month, parsed_date.day, parsed_date.year)
-                    print(date)  # Example: 2/20/2025
-                except ValueError as e:
-                    print(f"Error parsing date '{raw_date}': {e}")
-                    date = ""
-            else:
-                print("No date found!")
-                date = ""
-                       
-            # Convert from Metric to Imperial
-            height = root.findtext(".//A_002/Height", default="0")
-            size = round(float(height) / 25.4, 2) if height else ""
-
-            length_surveyed = root.findtext(".//I_002/Length_Surveyed", default="0")
-            distance = round(float(length_surveyed) / 304.8, 2) if length_surveyed else ""
-
-            # Grab comments where MSA is present
-            msa_comments = ""
-            for of_002 in root.findall(".//OF_002"):
-                code = of_002.findtext("Code", default="")
-                if code == "MSA":
-                    msa_comments = of_002.findtext("Comments", default="")
-                    break  # Use the first occurrence
-
-            extracted_data.append([
-                file_name, date, name, asset, upstream_mh, downstream_mh, size, distance, direction, msa_comments, cleaning
-            ])
-
-        except Exception as e:
-            print(f"Error processing {file_path}: {str(e)}")
-
-    # Create a DataFrame and save as Excel
-    df = pd.DataFrame(extracted_data, columns=[
-        "File Name", "Date", "Name", "Asset", "Upstream MH", "Downstream MH", "Size", "Distance", "Direction", "MSA", "Cleaning"
-    ])
-
-    export_path = os.path.join(folder_path, "export.xlsx")
-    df.to_excel(export_path, index=False)
-
-    return send_file(export_path, as_attachment=True)
 
 
 
