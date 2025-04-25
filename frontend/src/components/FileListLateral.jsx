@@ -30,6 +30,7 @@ const FileListLateral = ({ folderPathLateral, setFolderPathLateral, filesLateral
             const foundFiles = data.files || [];
 
             setFilesLateral(foundFiles);
+            console.log("Lateral files found:", foundFiles);
             if (foundFiles.length === 0) {
               setNoFilesFound(true);
             }

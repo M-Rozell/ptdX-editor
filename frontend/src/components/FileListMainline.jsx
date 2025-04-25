@@ -30,6 +30,7 @@ const FileListMainline = ({ folderPath, setFolderPath, files, setFiles, setUpdat
           const foundFiles = data.files || [];
 
           setFiles(foundFiles);
+          console.log("Mainline files found:", foundFiles);
           if (foundFiles.length === 0) {
             setNoFilesFound(true);
           }

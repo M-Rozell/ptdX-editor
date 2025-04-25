@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 import xml.etree.ElementTree as ET
 from .file_update_elements import update_elements
-from .file_update_lateral_mh import update_lateral_mh
+from .colors import color_text, cprint, COLORS
 
 
 # Find ptdX Lateral files
@@ -27,20 +27,50 @@ def find_ptdx_files_lateral(project_folder):
 
 
 
-
-
 # Update ptdX Lateral files
 def update_xml_files_lateral(folder_path, updates):
     """Updates specified elements in all .ptdX files."""
+    file_list_lateral = find_ptdx_files_lateral(folder_path)
+    
     updated_files_lateral = []
-
-    for root, _, files in os.walk(folder_path):
-        for file in files:
-            if file.endswith('.ptdX'):
-                file_path = os.path.join(root, file)
+    cprint("update_xml_files_lateral called", COLORS["green"])
+    
+    for file_path in file_list_lateral:
+                cprint(f"Processing: {file_path}", COLORS["yellow"])  
                 try:
                     tree = ET.parse(file_path)
                     root_element = tree.getroot()
+                    a_003 = root_element.find('.//A_003')
+                    
+                    if a_003 is not None:
+                        # Find mainline file in parent folder
+                        parent_folder = os.path.dirname(os.path.dirname(file_path))
+                        for mainline_file in os.listdir(parent_folder):
+                            if mainline_file.endswith('.ptdX'):
+                                mainline_path = os.path.join(parent_folder, mainline_file)
+                                try:
+                                    mainline_tree = ET.parse(mainline_path)
+                                    mainline_root = mainline_tree.getroot()
+                                    a_002 = mainline_root.find('.//A_002')
+                                    if a_002 is not None:
+                                        upstream_ap = a_002.findtext('Upstream_AP')
+                                        downstream_ap = a_002.findtext('Downstream_AP')
+                                        
+                                        if upstream_ap:
+                                            up_mh = a_003.find('Upstream_MH')
+                                            if up_mh is None:
+                                                up_mh = ET.SubElement(a_003, 'Upstream_MH')
+                                            up_mh.text = upstream_ap
+
+                                        if downstream_ap:
+                                            down_mh = a_003.find('Downstream_MH')
+                                            if down_mh is None:
+                                                down_mh = ET.SubElement(a_003, 'Downstream_MH')
+                                            down_mh.text = downstream_ap
+                                        
+                                        break  # Done once we’ve found the mainline
+                                except ET.ParseError:
+                                    continue  # Skip malformed mainline files                    
 
                     updated = False
 
@@ -49,9 +79,7 @@ def update_xml_files_lateral(folder_path, updates):
 
                     # Update elements inside <I_003>
                     updated |= update_elements(root_element, ".//I_003", updates)
-
-                    update_lateral_mh(file_path)
-                                   
+           
 
                     # Define the set of codes that require adjustment
                     valid_codes = {"AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AEP", "AJB", 
@@ -247,7 +275,8 @@ def update_xml_files_lateral(folder_path, updates):
                                 print(f"Updating <Pipe_Use> to '{new_pipeUse_value}' in {file_path}")
                                 pipeUse_element.text = new_pipeUse_value
                                 updated = True
-
+                    
+                    
                     if updated:
                         # Backup the original file before saving changes
                         backup_path = file_path + ".bak"
@@ -261,14 +290,23 @@ def update_xml_files_lateral(folder_path, updates):
                        
                         tree.write(file_path)  # Save updated XML back to file
                         updated_files_lateral.append(file_path)
-                        print(f"File {file_path} updated!")
+                        cprint(f"File {file_path} updated!", COLORS["cyan"])
                     else:
-                        print(f"No updates made for {file_path}")
+                        cprint(f"No updates made for {file_path}", COLORS["red"])
 
                 except Exception as e:
                     print(f"Error processing {file_path}: {str(e)}")              
-    
+   
     return updated_files_lateral
+
+
+
+
+
+
+
+
+
 
 
 
