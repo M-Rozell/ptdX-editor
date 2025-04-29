@@ -1,6 +1,7 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState,useEffect, lazy, Suspense } from "react";
 import "./css/App.css"
 import useLoadingDots from "./components/loadingDots";
+import SpiralIntro from "./components/SpiralIntro";
 
 const FileListMainline = lazy(() => import("./components/FileListMainline"));
 const XMLFormMainline = lazy(() => import("./components/XMLFormMainline"));
@@ -20,6 +21,13 @@ const FooterStatus = lazy(() => import("./components/footer"));
     const [updatedFilesLateral, setUpdatedFilesLateral] = useState([]);
     const [loading, setLoading] = useState(false);
     const [loadingDots, setLoadingDots] = useLoadingDots(loading);
+    const [showIntro, setShowIntro] = useState(true);
+
+    
+useEffect(() => {
+  const timeout = setTimeout(() => setShowIntro(false), 4000);
+  return () => clearTimeout(timeout);
+}, []);
 
     
     
@@ -35,9 +43,11 @@ const FooterStatus = lazy(() => import("./components/footer"));
      
 
     return (
-      <div>       
+      <div className="bg-gray-900 min-h-screen text-white relative overflow-hidden">
+        {showIntro && <SpiralIntro onFinish={() => setShowIntro(false)} />}
+          {!showIntro && (
+            <>  
         <header>
-          <div></div>
           <div className="headerBtns">
             <button type="button" 
                     className="folderSelectionBtn" 
@@ -56,7 +66,7 @@ const FooterStatus = lazy(() => import("./components/footer"));
           </div>
         </header>
   
-        <main className="filesFormWrapper">    
+        <main className="filesFormWrapper">
           <section>
           {showMainline &&
           <Suspense fallback={<div>Loading Mainline...</div>}>
@@ -122,6 +132,7 @@ const FooterStatus = lazy(() => import("./components/footer"));
           </section>
        
         </main>          
+        
         {(showMainline || showLateral) && (
               <Suspense fallback={<div>Loading footer...</div>}>
                 <FooterStatus
@@ -137,8 +148,9 @@ const FooterStatus = lazy(() => import("./components/footer"));
                   loadingDots={loadingDots}
                 />
               </Suspense>
-          )}       
-                  
+          )} 
+          </>
+          )}          
       </div>
     );
   };

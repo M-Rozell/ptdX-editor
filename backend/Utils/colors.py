@@ -1,4 +1,4 @@
-# utils/color.py
+# Colors for console output
 
 RESET = "\033[0m"
 

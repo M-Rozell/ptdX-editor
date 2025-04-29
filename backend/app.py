@@ -1,10 +1,7 @@
-from flask import Flask, request, jsonify, send_file
-from flask_cors import CORS
 import os
+from flask_cors import CORS
+from flask import Flask, request, jsonify, send_file
 from Utils import find_ptdx_files, update_xml_files, find_ptdx_files_lateral, update_xml_files_lateral, export_mainline_to_excel, export_lateral_to_excel
-import xml.etree.ElementTree as ET
-import pandas as pd
-from datetime import datetime
 
 
 app = Flask(__name__)

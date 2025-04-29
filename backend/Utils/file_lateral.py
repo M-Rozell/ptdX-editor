@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 import xml.etree.ElementTree as ET
 from .file_update_elements import update_elements
-from .colors import color_text, cprint, COLORS
+from .colors import cprint, COLORS
 
 
 # Find ptdX Lateral files
@@ -24,6 +24,8 @@ def find_ptdx_files_lateral(project_folder):
                     # Skip malformed XML files
                     pass
     return file_list_lateral
+
+
 
 
 

@@ -37,10 +37,6 @@ body,html {
   -webkit-app-region: drag; /* Enables dragging of the window in Electron */
 }
 
-.appWrapper{
-  display: contents;
-}
-
 header {
   display: flex;
   padding: .5rem;
@@ -355,6 +351,3 @@ footer::before {
   text-decoration: underline;
   color: var(--blue);
 }
-
-
-
