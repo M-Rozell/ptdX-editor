@@ -1,10 +1,9 @@
 import os
 import pandas as pd
 from datetime import datetime
+from .colors import cprint, COLORS
 import xml.etree.ElementTree as ET
 from .file_update_elements import update_elements
-from .colors import cprint, COLORS
-
 
 # Find ptdX Lateral files
 def find_ptdx_files_lateral(project_folder):
@@ -99,14 +98,12 @@ def update_xml_files_lateral(folder_path, updates):
                                     distance_value = float(distance_element.text.strip())
                                     if distance_value > 0:  
                                         adjusted_value = round(distance_value / 304.8) * 304.8 # Convert from Metric to Imperial and Round
-                                        print(f"Updating <Distance> from {distance_value} to {adjusted_value} in {file_path}")
                                         distance_element.text = str(adjusted_value)
 
                                         # Add the adjusted value to <Length_Surveyed>
                                         length_surveyed_element = root_element.find(".//I_003/Length_Surveyed")
                                         if length_surveyed_element is not None and length_surveyed_element.text:
                                             length_surveyed_value = float(length_surveyed_element.text.strip())
-                                            print(f"Updating <Length_Surveyed> from {length_surveyed_value} to {adjusted_value} in {file_path}")
                                             length_surveyed_element.text = str(adjusted_value)
 
                                         updated = True
@@ -117,13 +114,9 @@ def update_xml_files_lateral(folder_path, updates):
                     for model in root_element.findall(".//A_003"):
                         material_element = model.find("Material")
                         if material_element is not None:
-                                print(f"Found <Material>: {material_element.text}")  # Debug output
                                 if material_element.text.strip() == "ZZZ":  # Ensure no whitespace issues
-                                    print(f"Updating <Material> from 'ZZZ' to 'XXX' in {file_path}")
                                     material_element.text = "XXX"
                                     updated = True
-                                else:
-                                    print(f"<Material> is not 'ZZZ' in {file_path}, skipping.")
                    
                     for a_003 in root_element.findall(".//A_003"):
                         # Check if <Material> exists
@@ -134,7 +127,6 @@ def update_xml_files_lateral(folder_path, updates):
                         if material_value == "XXX" or ("Material" in updates and updates["Material"] == "XXX"):
                             pipe_joint_length_element = a_003.find("Pipe_Joint_Length")
                             if pipe_joint_length_element is not None: # If Material is "XXX" remove joint length
-                                print(f"Removing <Pipe_Joint_Length> because <Material> is 'XXX' in {file_path}")
                                 a_003.remove(pipe_joint_length_element)
                                 updated = True
 
@@ -151,17 +143,14 @@ def update_xml_files_lateral(folder_path, updates):
                                     # Create <Lining_Method> if it does not exist
                                     lining_method_element = ET.Element("Lining_Method")
                                     a_003.append(lining_method_element)
-                                    print(f"Created <Lining_Method> in {file_path}")
 
                                 if lining_method_element.text != "CIP":
                                     # Update <Lining_Method> to "CIP" if it's not already set
-                                    print(f"Updating <Lining_Method> to 'CIP' because Material is 'XXX' in {file_path}")
                                     lining_method_element.text = "CIP"
                                     updated = True
                             else:
                                 if lining_method_element is not None:
                                     # Remove <Lining_Method> if Material is anything other than "XXX"
-                                    print(f"Removing <Lining_Method> because Material is '{material_value}' in {file_path}")
                                     a_003.remove(lining_method_element)
                                     updated = True
 
@@ -171,7 +160,6 @@ def update_xml_files_lateral(folder_path, updates):
                         # Background change: Remove <PO_Number> if it exists inside <I_003>
                         po_number_element = i_003.find("PO_Number")
                         if po_number_element is not None:
-                            print(f"Removing <PO_Number> from {file_path}")
                             i_003.remove(po_number_element)
                             updated = True
 
@@ -189,7 +177,6 @@ def update_xml_files_lateral(folder_path, updates):
                             element = i_003.find(key)
                             if element is not None:
                                 if element.text != value:
-                                    print(f"Updating <{key}> to '{value}' in {file_path}")
                                     element.text = value
                                     updated = True
                             else:
@@ -201,14 +188,12 @@ def update_xml_files_lateral(folder_path, updates):
                             purpose_element = ET.Element("Purpose")
                             purpose_element.text = "G"
                             i_003.append(purpose_element)
-                            print(f"Adding <Purpose> with default value 'G' in {file_path}")
                             updated = True
 
                         # Apply user updates (if Purpose is provided in the form, overwrite it)
                         if "Purpose" in updates:  # updates comes from the request
                             new_purpose_value = updates["Purpose"]
                             if purpose_element.text != new_purpose_value:
-                                print(f"Updating <Purpose> to '{new_purpose_value}' in {file_path}")
                                 purpose_element.text = new_purpose_value
                                 updated = True
 
@@ -218,10 +203,8 @@ def update_xml_files_lateral(folder_path, updates):
                             work_order_element = ET.Element("WorkOrder")
                             work_order_element.text = updates.get("WorkOrder", "")  # Use provided value or empty string
                             i_003.append(work_order_element)
-                            print(f"Adding <WorkOrder> with value '{work_order_element.text}' in {file_path}")
                             updated = True
                         elif "WorkOrder" in updates and work_order_element.text != updates["WorkOrder"]:
-                            print(f"Updating <WorkOrder> to '{updates['WorkOrder']}' in {file_path}")
                             work_order_element.text = updates["WorkOrder"]
                             updated = True
 
@@ -233,12 +216,9 @@ def update_xml_files_lateral(folder_path, updates):
                             if work_order_element is None:
                                 work_order_element = ET.Element("WorkOrder")
                                 i_003.append(work_order_element)
-                                print(f"Adding <WorkOrder> with value '{new_work_order_value}' in {file_path}")
                             else:
-                                print(f"Updating <WorkOrder> to '{new_work_order_value}' in {file_path}")
-
-                            work_order_element.text = new_work_order_value
-                            updated = True
+                                work_order_element.text = new_work_order_value
+                                updated = True
 
                         # Ensure <Project> exists if missing
                         project_element = i_003.find("Project")
@@ -246,10 +226,8 @@ def update_xml_files_lateral(folder_path, updates):
                             project_element = ET.Element("Project")
                             project_element.text = updates.get("Project", "")  # Use provided value or empty string
                             i_003.append(project_element)
-                            print(f"Adding <Project> with value '{project_element.text}' in {file_path}")
                             updated = True
                         elif "Project" in updates and project_element.text != updates["Project"]:
-                            print(f"Updating <Project> to '{updates['Project']}' in {file_path}")
                             project_element.text = updates["Project"]
                             updated = True
 
@@ -257,7 +235,6 @@ def update_xml_files_lateral(folder_path, updates):
                         if "Project" in updates:  # updates comes from the request
                             new_project_value = updates["Project"]
                             if project_element.text != new_project_value:
-                                print(f"Updating <Project> to '{new_project_value}' in {file_path}")
                                 project_element.text = new_project_value
                                 updated = True
 
@@ -267,14 +244,12 @@ def update_xml_files_lateral(folder_path, updates):
                             pipeUse_element = ET.Element("Pipe_Use")
                             pipeUse_element.text = "SS"
                             a_003.append(pipeUse_element)
-                            print(f"Adding <Pipe_Use> with default value 'G' in {file_path}")
                             updated = True
 
                         # Apply user updates (if Pipe_Use is provided in the form, overwrite it)
                         if "Pipe_Use" in updates:  # updates comes from the request
                             new_pipeUse_value = updates["Pipe_Use"]
                             if pipeUse_element.text != new_pipeUse_value:
-                                print(f"Updating <Pipe_Use> to '{new_pipeUse_value}' in {file_path}")
                                 pipeUse_element.text = new_pipeUse_value
                                 updated = True
                     
@@ -300,12 +275,6 @@ def update_xml_files_lateral(folder_path, updates):
                     print(f"Error processing {file_path}: {str(e)}")              
    
     return updated_files_lateral
-
-
-
-
-
-
 
 
 

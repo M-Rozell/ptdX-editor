@@ -12,10 +12,10 @@ const SpiralIntro = ({ onFinish }) => {
     const centerX = width / 2;
     const centerY = height / 2;
 
-    const maxRadius = Math.min(width, height) * 1.2;
-    const totalLines = 100;
-    const spiralSpeed = 0.15;
-    const maxTime = 4000; // 5 seconds of animation
+    const maxRadius = Math.min(width, height) * 1.05;
+    const totalLines = 150;
+    const spiralSpeed = 0.5;
+    const maxTime = 5500; // 5 seconds of animation
     let angle = 0;
     const lines = [];
     let welcomeAlpha = 0;

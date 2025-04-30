@@ -12,10 +12,10 @@ const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, loading, se
     Pipe_Use: "",
     Purpose: "",
   });
-
+  
+  const [showModal, setShowModal] = useState(false);
   const [exporting, setExporting] = useState(false); 
   const [exportedFilePath, setExportedFilePath] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   
   // Options for Pipe_Use and Purpose dropdowns
   const pipeUseOptions = [
@@ -123,10 +123,10 @@ const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, loading, se
                 onChange={handleChange}
               >
                 <option value=""></option>
-                {pipeUseOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  {pipeUseOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
                     {option.description}
-                  </option>
+                </option>
                 ))}
               </select>
             ) : key === "Purpose" ? (
@@ -137,10 +137,10 @@ const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, loading, se
                 onChange={handleChange}
               >
                 <option value=""></option>
-                {purposeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  {purposeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
                     {option.description}
-                  </option>
+                </option>
                 ))}
               </select>
             ) : (
@@ -148,7 +148,6 @@ const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, loading, se
                 type="text"
                 id={key}
                 name={key}
-                //placeholder={key.replace(/_/g, " ")}
                 value={formData[key]}
                 onChange={handleChange}
               />
@@ -156,49 +155,43 @@ const XMLFormLateral = ({ folderPathLateral, setUpdatedFilesLateral, loading, se
           </div>
         ))}
       
-      <div className="bottomBtnsWrapper">
-        <button 
-          type="button"
-          onClick={handleSubmit} 
-          className="bottomBtns"
-        >Save Changes</button>
-        
-        <button 
-          type="button" 
-          onClick={handleExport} 
-          className="bottomBtns" 
-          aria-live="polite"
-        >
-          Export
-        </button>
-        <button 
-          type="button" 
-          onClick={handleClear} 
-          className="bottomBtns"
-        >Clear</button>
-      </div>
-
-      {showModal && (
-        <Suspense fallback={<div>Loading Modal...</div>}>
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <ExportModal 
-          filePath={exportedFilePath} 
-          onClose={closeModal}
-          loading={exporting} 
+        <div className="bottomBtnsWrapper">
+          <button 
+            type="button"
+            onClick={handleSubmit} 
+            className="bottomBtns"
+          >Save Changes</button>
           
-          />
+          <button 
+            type="button" 
+            onClick={handleExport} 
+            className="bottomBtns" 
+            aria-live="polite"
+          >Export</button>
+          
+          <button 
+            type="button" 
+            onClick={handleClear} 
+            className="bottomBtns"
+          >Clear</button>
         </div>
-      </div>
-      </Suspense>
-      )}
-      
+
+          {showModal && (
+            <Suspense fallback={<div>Loading Modal...</div>}>
+              <div className="modal-overlay">
+                <div className="modal-content">
+                  <ExportModal 
+                    filePath={exportedFilePath} 
+                    onClose={closeModal}
+                    loading={exporting}                   
+                  />
+                </div>
+              </div>
+            </Suspense>
+          )}     
       </fieldset>
     </form>
-  );
-  
+  );  
 };
   
-
-
 export default XMLFormLateral;

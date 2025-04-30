@@ -3,7 +3,7 @@ const ExportModal = lazy(() => import("./ExportModal"));
 
 const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) => {
   
-  
+ 
   const [formData, setFormData] = useState({
     WorkOrder: "",
     Owner: "",
@@ -13,11 +13,10 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) =>
     Purpose: "",
   });
 
+  const [showModal, setShowModal] = useState(false);
   const [exporting, setExporting] = useState(false); 
   const [exportedFilePath, setExportedFilePath] = useState(null);
-  const [showModal, setShowModal] = useState(false);
- 
-
+  
   // Define options for Pipe_Use and Purpose dropdowns
   const pipeUseOptions = [
     { value: "SS", description: "Sanitary Sewage Pipe" },
@@ -40,8 +39,7 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   
-  
-  
+   
   const handleSubmit = () => {
     if (!folderPath) {
       console.error("Folder path is required");
@@ -51,7 +49,6 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) =>
     const updates = Object.fromEntries(
       Object.entries(formData).filter(([_, value]) => value !== "")
     );
-
     setLoading(true);
 
     fetch("http://localhost:5000/update-files", {
@@ -69,12 +66,12 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) =>
       });
     };
 
-  const handleExport = async () => {
+  
+    const handleExport = async () => {
     if (!folderPath) {
       console.error("Folder path is required");
       return;
     }
-  
     setExporting(true);
     try {
       setShowModal(true);
@@ -127,10 +124,10 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) =>
                 onChange={handleChange}
               >
                 <option value=""></option>
-                {pipeUseOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  {pipeUseOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
                     {option.description}
-                  </option>
+                </option>
                 ))}
               </select>
             ) : key === "Purpose" ? (
@@ -141,10 +138,10 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) =>
                 onChange={handleChange}
               >
                 <option value=""></option>
-                {purposeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  {purposeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
                     {option.description}
-                  </option>
+                </option>
                 ))}
               </select>
             ) : (
@@ -152,7 +149,6 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) =>
                 type="text"
                 id={key}
                 name={key}
-                //placeholder={key.replace(/_/g, " ")}
                 value={formData[key]}
                 onChange={handleChange}
               />
@@ -160,45 +156,43 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) =>
           </div>
         ))}
       
-      <div className="bottomBtnsWrapper">
-        <button 
-          type="button"
-          onClick={handleSubmit} 
-          className="bottomBtns"
-        >Save Changes</button>
-        
-        <button 
-          type="button" 
-          onClick={handleExport} 
-          className="bottomBtns" 
-          aria-live="polite"
-        >Export
-        </button>
-        <button 
-          type="button" 
-          onClick={handleClear} 
-          className="bottomBtns"
-        >Clear</button>
-      </div>
-      {showModal && (
-        <Suspense fallback={<div>Loading Modal...</div>}>
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <ExportModal 
-          filePath={exportedFilePath} 
-          onClose={closeModal}
-          loading={exporting}
-          />
-        </div>
-      </div>
-      </Suspense>
-      )}
+          <div className="bottomBtnsWrapper">
+            <button 
+              type="button"
+              onClick={handleSubmit} 
+              className="bottomBtns"
+            >Save Changes</button>
+            
+            <button 
+              type="button" 
+              onClick={handleExport} 
+              className="bottomBtns" 
+              aria-live="polite"
+            >Export</button>
+            
+            <button 
+              type="button" 
+              onClick={handleClear} 
+              className="bottomBtns"
+            >Clear</button>
+          </div>
+      
+            {showModal && (
+              <Suspense fallback={<div>Loading Modal...</div>}>
+                <div className="modal-overlay">
+                  <div className="modal-content">
+                    <ExportModal 
+                      filePath={exportedFilePath} 
+                      onClose={closeModal}
+                      loading={exporting}
+                    />
+                  </div>
+                </div>
+            </Suspense>
+            )}
       </fieldset>
     </form>
-  );
-  
+  );  
 };
   
-
-
 export default XMLFormMainline;

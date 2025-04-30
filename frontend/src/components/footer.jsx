@@ -19,6 +19,7 @@ const FooterStatus = ({
         Selected Folder: {showMainline && <span>{folderPath}</span>}
                          {showLateral && <span>{folderPathLateral}</span>}
       </section>  
+      
       <section className="footerText">
         Files Found: {showMainline && (
                         <span style={{color: countFoundFiles > 0 ? "#02fdd7" : "#FFFFE8"}}>
@@ -29,6 +30,7 @@ const FooterStatus = ({
                           {countFoundFilesLateral}
                         </span>)}
       </section> 
+      
       <section className="footerText">
         Files Updated:  {loading ? (
                           <span className="updating">Updating{loadingDots}</span>

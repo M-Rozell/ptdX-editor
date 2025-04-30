@@ -18,9 +18,7 @@ const ExportModal = ({ filePath, onClose, loading}) => {
   };
 
   
-
   return (
-
       <>
         {loading ? (
           <span className="exporting">Exporting{loadingDots}</span>

@@ -57,7 +57,6 @@ const FileListMainline = ({ folderPath, setFolderPath, files, setFiles, setUpdat
     <div>
       <fieldset>
         <legend>Mainline Files</legend>
-
           <div className="filesBtnWrapper">
             <button type="button" onClick={handleFolderSelection} className="folderSelectionBtn">
               Load Files
@@ -66,7 +65,6 @@ const FileListMainline = ({ folderPath, setFolderPath, files, setFiles, setUpdat
               Clear Files
             </button>
           </div>  
-
           <ol>
           {loading ? (
               <p className="loading">Loading{loadingDots}</p>
@@ -75,8 +73,7 @@ const FileListMainline = ({ folderPath, setFolderPath, files, setFiles, setUpdat
             ) : (
               files.map((file, index) => <li key={index}>{file}</li>)
             )}
-          </ol>
-        
+          </ol>        
       </fieldset>
     </div>
   );
