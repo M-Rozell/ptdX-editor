@@ -1,5 +1,6 @@
 import "./css/App.css"
 import SpiralIntro from "./components/SpiralIntro";
+import SplashTempest from "./components/SplashTempest";
 import useLoadingDots from "./components/loadingDots";
 import React, { useState,useEffect, lazy, Suspense } from "react";
 
@@ -24,10 +25,6 @@ const FooterStatus = lazy(() => import("./components/footer"));
     const [updatedFilesLateral, setUpdatedFilesLateral] = useState([]);
     
     
-      useEffect(() => {
-        const timeout = setTimeout(() => setShowIntro(false), 5000);
-        return () => clearTimeout(timeout);
-        }, []);
       
         const handleMainlineClick = () => {
           setShowMainline(true);
@@ -42,7 +39,7 @@ const FooterStatus = lazy(() => import("./components/footer"));
 
     return (
       <div>
-        {showIntro && <SpiralIntro onFinish={() => setShowIntro(false)} />}
+        {showIntro && <SplashTempest onFinish={() => setShowIntro(false)} />}
           {!showIntro && (
             <div className="fadeInElement">
               <header>

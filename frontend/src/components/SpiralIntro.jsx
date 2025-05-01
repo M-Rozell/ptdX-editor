@@ -13,13 +13,18 @@ const SpiralIntro = ({ onFinish }) => {
     const centerY = height / 2;
 
     const maxRadius = Math.min(width, height) * 1.05;
-    const totalLines = 150;
-    const spiralSpeed = 0.5;
-    const maxTime = 5500; // 5 seconds of animation
+    const totalLines = 199.5;
+    const spiralSpeed = .15;
     let angle = 0;
     const lines = [];
     let welcomeAlpha = 0;
     let welcomeTimer = 0;
+    const fadeInDuration = 200; // Time to fade in
+    const textRiseOffset = 250; // Amount to rise the text
+    let holdTimer = 0; // Timer to hold the text
+    const holdDuration = 60; // 240 frames = 4 seconds at 60 FPS
+    const textDelayFrames = 1; // 2 seconds at 60fps
+    let textDelayTimer = 0;
 
     function generateNextLine() {
       const x1 = centerX + Math.cos(angle) * maxRadius;
@@ -31,6 +36,9 @@ const SpiralIntro = ({ onFinish }) => {
       angle += spiralSpeed;
     }
 
+    
+    
+    
     function draw() {
       ctx.fillStyle = '#1c1c1c';
       ctx.fillRect(0, 0, width, height);
@@ -45,36 +53,52 @@ const SpiralIntro = ({ onFinish }) => {
         ctx.beginPath();
         ctx.moveTo(line.x1, line.y1);
         ctx.lineTo(line.x2, line.y2);
-        ctx.strokeStyle = `rgba(255, 105, 180, ${line.alpha})`;
-        ctx.lineWidth = 1.5;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = 'hotpink';
+        ctx.strokeStyle = `rgba(250,0, 138, ${line.alpha})`;
+        ctx.lineWidth = 1.75;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#03fdf3';
         ctx.stroke();
       }
 
-      // Fade in text
-      if (lines.length >= totalLines) {
-        if (welcomeTimer < 60) {
-          welcomeTimer++;
-          welcomeAlpha = welcomeTimer / 60;
+      // Wait before starting text animation
+        if (textDelayTimer < textDelayFrames) {
+          if (welcomeTimer < fadeInDuration) {
+            welcomeTimer++;
+          } else {
+            holdTimer++;
+          }
+
+
+       // Easing for fade and rise
+       const t = Math.min(welcomeTimer / fadeInDuration, 1);
+       const easedT = (1 - Math.cos(t * Math.PI)) / 2; // smoother easing
+
+       welcomeAlpha = easedT         
+          const baseY = centerY + 22;
+          const animatedY = baseY + textRiseOffset * (1 - easedT);
+          const animatedYTop = baseY - textRiseOffset * (1 - easedT);
+          
+          ctx.font = 'bold 60px Arial';
+          ctx.textAlign = 'center';
+          // Set stroke style for outline
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = `rgba(3, 253, 243, ${welcomeAlpha})`; // black outline with matching alpha
+          ctx.strokeText('.ptdX editor', centerX, animatedY);
+          ctx.strokeText('.ptdX editor', centerX, animatedYTop);
+          ctx.fillStyle = `rgba(253,252, 3, ${welcomeAlpha})`;          
+          ctx.fillText('.ptdX editor', centerX, animatedY);
+          ctx.fillText('.ptdX editor', centerX, animatedYTop);
+          
         }
 
-        ctx.font = 'bold 60px Arial';
-        ctx.fillStyle = `rgba(255, 182, 193, ${welcomeAlpha})`;
-        ctx.textAlign = 'center';
-        // Move the "WELCOME" text slightly lower (by adjusting the Y position)
-        const textYPosition = centerY + 23;  // Adjust this value to move lower or higher
-        ctx.fillText('WELCOME', centerX, textYPosition);
-      }
-
-      // Stop drawing after the animation is done
-      if (welcomeTimer >= 120) {
+        // End after fade + hold complete
+      if (welcomeTimer >= fadeInDuration && holdTimer >= holdDuration) {
         cancelAnimationFrame(animationFrameId.current);
         onFinish?.();
       } else {
         animationFrameId.current = requestAnimationFrame(draw);
       }
-    }
+      }
 
     // Start the animation
     draw();

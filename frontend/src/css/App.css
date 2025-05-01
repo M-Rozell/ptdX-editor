@@ -357,3 +357,51 @@ footer::before {
   text-decoration: underline;
   color: var(--blue);
 }
+
+.canvasWrapper {
+  height: 93.5vh;
+  width: 100vw;
+  background-image: radial-gradient(rgb(176, 247, 240),rgb(2, 203, 203),rgb(3, 3, 3));
+  z-index: 1;
+}
+
+.splash {
+  position: fixed;
+  display: block;
+  z-index: 10;
+}
+.circleBackground {
+  margin: 0;
+  padding: 0;
+  top: 6.75%;
+  left: 25.3%;
+  height: 92vh;
+  width: 49.4vw;
+  border-radius: 50%;
+  position: fixed;
+  place-items: center;
+  background-color: #024261;
+  z-index: 2;
+}
+
+.splashBtn {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: monospace;
+  font-size: 1.2rem;
+  font-weight: 500;
+  background: transparent;
+  color: cyan;
+  border: 2px solid cyan;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  z-index: 11;
+}
+.splashBtn:not(:disabled):hover {
+  transform: scale(-1) translateX(50%);
+}
+.splashBtn:not(:disabled):hover:active {
+  transform: scale(1) translateX(-50%);
+}
