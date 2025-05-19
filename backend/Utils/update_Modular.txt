@@ -1,0 +1,217 @@
+# utils/xml_updater.py
+import os
+import xml.etree.ElementTree as ET
+from .colors import cprint, COLORS
+
+# Constants
+VALID_CODES = {"AMH", "ACB", "ACOH", "ACOM", "ACOP", "ADP", "AEP", "AJB", 
+               "AM", "AOC", "ATC", "AWA", "AWW", "AZ", "MSA"}
+
+TECHNOLOGY_DEFAULTS = {
+    "Inspection_Technology_Used_CCTV": "true",
+    "Inspection_Technology_Used_Laser": "false",
+    "Inspection_Technology_Used_Sonar": "false",
+    "Inspection_Technology_Used_Sidewall": "false",
+    "Inspection_Technology_Used_Zoom": "false",
+    "Inspection_Technology_Used_Other": "false"
+}
+
+def update_xml_files(folder_path, updates):
+    updated_files = []
+
+    for root, _, files in os.walk(folder_path):
+        for file in files:
+            if not file.endswith(".ptdX"):
+                continue
+
+            file_path = os.path.join(root, file)
+            try:
+                tree = ET.parse(file_path)
+                root_element = tree.getroot()
+                updated = False
+
+                updated |= update_main_sections(root_element, updates)
+                updated |= adjust_distances(root_element)
+                updated |= update_material_logic(root_element, updates)
+                updated |= update_lining_method(root_element)
+                updated |= update_i_002_logic(root_element, updates)
+                updated |= update_total_length(root_element)
+                updated |= update_comments(root_element)
+
+                if updated:
+                    backup_and_save(file_path, tree)
+                    updated_files.append(file_path)
+                    cprint(f"File {file_path} updated!", "cyan")
+                else:
+                    cprint(f"No updates made for {file_path}", "red")
+
+            except Exception as e:
+                print(f"Error processing {file_path}: {str(e)}")
+
+    return updated_files
+
+def update_main_sections(root_element, updates):
+    return update_elements(root_element, ".//A_002", updates) | update_elements(root_element, ".//I_002", updates)
+
+def update_elements(parent_element, parent_tag, updates):
+    parent = parent_element.find(parent_tag)
+    if parent is None:
+        return False
+
+    updated = False
+    for key, value in updates.items():
+        element = parent.find(key)
+        if element is not None and element.text != value:
+            element.text = value
+            updated = True
+    return updated
+
+def adjust_distances(root_element):
+    updated = False
+
+    for of_002 in root_element.findall(".//OF_002"):
+        code = of_002.findtext("Code", "").strip()
+        dist_elem = of_002.find("Distance")
+        if code in VALID_CODES and dist_elem is not None:
+            try:
+                val = float(dist_elem.text.strip())
+                if val > 0:
+                    adj_val = round(val / 304.8) * 304.8
+                    dist_elem.text = str(adj_val)
+                    len_elem = root_element.find(".//I_002/Length_Surveyed")
+                    if len_elem is not None:
+                        len_elem.text = str(adj_val)
+                    updated = True
+            except ValueError:
+                continue
+    return updated
+
+def update_material_logic(root_element, updates):
+    updated = False
+    for a_002 in root_element.findall(".//A_002"):
+        mat = a_002.find("Material")
+        if mat is not None and mat.text.strip() == "ZZZ":
+            mat.text = "XXX"
+            updated = True
+
+        if mat is not None and mat.text.strip() == "XXX":
+            pj_elem = a_002.find("Pipe_Joint_Length")
+            if pj_elem is not None:
+                a_002.remove(pj_elem)
+                updated = True
+    return updated
+
+def update_lining_method(root_element):
+    updated = False
+    for a_002 in root_element.findall(".//A_002"):
+        mat = a_002.findtext("Material", "").strip()
+        lining = a_002.find("Lining_Method")
+
+        if mat == "XXX":
+            if lining is None:
+                lining = ET.SubElement(a_002, "Lining_Method")
+            if lining.text != "CIP":
+                lining.text = "CIP"
+                updated = True
+        elif lining is not None:
+            a_002.remove(lining)
+            updated = True
+    return updated
+
+def update_i_002_logic(root_element, updates):
+    updated = False
+
+    for i_002 in root_element.findall(".//I_002"):
+        po = i_002.find("PO_Number")
+        if po is not None:
+            i_002.remove(po)
+            updated = True
+
+        for key, val in TECHNOLOGY_DEFAULTS.items():
+            el = i_002.find(key)
+            if el is not None and el.text != val:
+                el.text = val
+                updated = True
+
+        purpose = i_002.find("Purpose")
+        if purpose is None:
+            purpose = ET.SubElement(i_002, "Purpose")
+            purpose.text = "G"
+            updated = True
+        elif "Purpose" in updates and purpose.text != updates["Purpose"]:
+            purpose.text = updates["Purpose"]
+            updated = True
+
+        for field in ["WorkOrder", "Project"]:
+            elem = i_002.find(field)
+            if elem is None:
+                elem = ET.SubElement(i_002, field)
+                elem.text = updates.get(field, "")
+                updated = True
+            elif field in updates and elem.text != updates[field]:
+                elem.text = updates[field]
+                updated = True
+
+    for a_002 in root_element.findall(".//A_002"):
+        pipe_use = a_002.find("Pipe_Use")
+        if pipe_use is None:
+            pipe_use = ET.SubElement(a_002, "Pipe_Use")
+            pipe_use.text = updates.get("Pipe_Use", "SS")
+            updated = True
+        elif "Pipe_Use" in updates and pipe_use.text != updates["Pipe_Use"]:
+            pipe_use.text = updates["Pipe_Use"]
+            updated = True
+
+    return updated
+
+def update_total_length(root_element):
+    if any("MSA" in (el.text or "") for el in root_element.findall(".//OF_002/Code")):
+        return False
+
+    len_val = root_element.findtext(".//I_002/Length_Surveyed")
+    if not len_val:
+        return False
+
+    updated = False
+    for a_002 in root_element.findall(".//A_002"):
+        total = a_002.find("Total_Length")
+        if total is None:
+            total = ET.SubElement(a_002, "Total_Length")
+            total.text = len_val
+            updated = True
+        elif total.text != len_val:
+            total.text = len_val
+            updated = True
+    return updated
+
+def update_comments(root_element):
+    direction = root_element.findtext(".//I_002/Direction", "").strip()
+    upstream = root_element.findtext(".//A_002/Upstream_AP", "")
+    downstream = root_element.findtext(".//A_002/Downstream_AP", "")
+
+    start_mh, end_mh = (upstream, downstream) if direction == "D" else (downstream, upstream)
+    updated = False
+
+    for of_002 in root_element.findall(".//OF_002"):
+        code = of_002.findtext("Code", "").strip()
+        dist = of_002.findtext("Distance")
+        try:
+            distance = float(dist.strip()) if dist else 0
+        except ValueError:
+            continue
+
+        if code in VALID_CODES - {"MSA"}:
+            comment = f"Start Inspection: {start_mh}" if distance == 0 else f"End Inspection: {end_mh}"
+            comment_el = of_002.find("Comments")
+            if comment_el is None:
+                comment_el = ET.SubElement(of_002, "Comments")
+            comment_el.text = comment
+            updated = True
+    return updated
+
+def backup_and_save(file_path, tree):
+    backup_path = file_path + ".bak"
+    if os.path.exists(backup_path):
+        os.remove(backup_path)
+    os.rename(file_path, backup_path)
+    tree.write(file_path, encoding="utf-8", xml_declaration=True)

@@ -90,7 +90,6 @@ def update_xml_files_lateral(folder_path, updates):
                     for of_003 in root_element.findall(".//OF_003"):
                         code_element = of_003.find("Code")
                         distance_element = of_003.find("Distance")
-
                         if code_element is not None and distance_element is not None:
                             code_value = code_element.text.strip()
                             if code_value in valid_codes:  # Check if code is in the allowed set
@@ -99,62 +98,62 @@ def update_xml_files_lateral(folder_path, updates):
                                     if distance_value > 0:  
                                         adjusted_value = round(distance_value / 304.8) * 304.8 # Convert from Metric to Imperial and Round
                                         distance_element.text = str(adjusted_value)
-
                                         # Add the adjusted value to <Length_Surveyed>
                                         length_surveyed_element = root_element.find(".//I_003/Length_Surveyed")
                                         if length_surveyed_element is not None and length_surveyed_element.text:
                                             length_surveyed_value = float(length_surveyed_element.text.strip())
                                             length_surveyed_element.text = str(adjusted_value)
-
                                         updated = True
                                 except ValueError:
                                     print(f"Could not parse <Distance> value in {file_path}")
                                    
-                    # Background change: Modify <Material> if it exists
-                    for model in root_element.findall(".//A_003"):
-                        material_element = model.find("Material")
-                        if material_element is not None:
-                                if material_element.text.strip() == "ZZZ":  # Ensure no whitespace issues
-                                    material_element.text = "XXX"
-                                    updated = True
-                   
                     for a_003 in root_element.findall(".//A_003"):
-                        # Check if <Material> exists
                         material_element = a_003.find("Material")
-                        material_value = material_element.text if material_element is not None else ""
-
-                        # Determine if <Material> is "XXX" or has been changed to "XXX"
+                        material_value = material_element.text.strip() if material_element is not None and material_element.text else ""
+                        # Modify <Material> from "ZZZ" to "XXX"
+                        if material_value == "ZZZ":
+                            material_element.text = "XXX"
+                            material_value = "XXX"  # Update local variable for next steps
+                            updated = True
+                        # If <Material> is "XXX", remove <Pipe_Joint_Length>
                         if material_value == "XXX" or ("Material" in updates and updates["Material"] == "XXX"):
                             pipe_joint_length_element = a_003.find("Pipe_Joint_Length")
-                            if pipe_joint_length_element is not None: # If Material is "XXX" remove joint length
+                            if pipe_joint_length_element is not None:
                                 a_003.remove(pipe_joint_length_element)
                                 updated = True
+                        # Handle <Lining_Method> based on <Material>
+                        lining_method_element = a_003.find("Lining_Method")
+                        if material_value == "XXX":
+                            if lining_method_element is None:
+                                lining_method_element = ET.Element("Lining_Method")
+                                a_003.append(lining_method_element)
+                            if lining_method_element.text != "CIP":
+                                lining_method_element.text = "CIP"
+                                updated = True
+                        else:
+                            if lining_method_element is not None:
+                                a_003.remove(lining_method_element)
+                                updated = True
 
-                    # Background change: Handle <Lining_Method> based on <Material> inside <A_003>
-                    for a_003 in root_element.findall(".//A_003"):
-                        material_element = a_003.find("Material")
-                        
-                        if material_element is not None:
-                            material_value = material_element.text.strip()
-                            lining_method_element = a_003.find("Lining_Method")
-
-                            if material_value == "XXX":
-                                if lining_method_element is None:
-                                    # Create <Lining_Method> if it does not exist
-                                    lining_method_element = ET.Element("Lining_Method")
-                                    a_003.append(lining_method_element)
-
-                                if lining_method_element.text != "CIP":
-                                    # Update <Lining_Method> to "CIP" if it's not already set
-                                    lining_method_element.text = "CIP"
-                                    updated = True
-                            else:
-                                if lining_method_element is not None:
-                                    # Remove <Lining_Method> if Material is anything other than "XXX"
-                                    a_003.remove(lining_method_element)
-                                    updated = True
+        # Update
+                        # Apply user updates or ensure <Pipe_Use> exists with default "SS"
+                        pipeUse_element = a_003.find("Pipe_Use")
+                        if "Pipe_Use" in updates and updates["Pipe_Use"].strip():
+                            new_pipeUse_value = updates["Pipe_Use"]
+                            if pipeUse_element is None:
+                                pipeUse_element = ET.Element("Pipe_Use")
+                                a_003.append(pipeUse_element)
+                            pipeUse_element.text = new_pipeUse_value
+                            updated = True
+                        elif pipeUse_element is None:
+                            # No update provided, and element doesn't exist — create with default "SS"
+                            pipeUse_element = ET.Element("Pipe_Use")
+                            pipeUse_element.text = "SS"
+                            a_003.append(pipeUse_element)
+                            updated = True
 
 
+        # Background Cleanup    
                     # Iterate over all I_003 elements
                     for i_003 in root_element.findall(".//I_003"):
                         # Background change: Remove <PO_Number> if it exists inside <I_003>
@@ -172,7 +171,6 @@ def update_xml_files_lateral(folder_path, updates):
                             "Inspection_Technology_Used_Zoom": "false",
                             "Inspection_Technology_Used_Other": "false"
                         }
-
                         for key, value in technology_updates.items():
                             element = i_003.find(key)
                             if element is not None:
@@ -190,68 +188,50 @@ def update_xml_files_lateral(folder_path, updates):
                             i_003.append(purpose_element)
                             updated = True
 
-                        # Apply user updates (if Purpose is provided in the form, overwrite it)
-                        if "Purpose" in updates:  # updates comes from the request
+        # Updates        
+                        # Apply user updates or ensure <Purpose> exists with default "G"
+                        purpose_element = i_003.find("Purpose")
+                        if "Purpose" in updates and updates["Purpose"].strip():
                             new_purpose_value = updates["Purpose"]
-                            if purpose_element.text != new_purpose_value:
-                                purpose_element.text = new_purpose_value
-                                updated = True
-
-                                 # Ensure <WorkOrder> exists if missing
-                        work_order_element = i_003.find("WorkOrder")
-                        if work_order_element is None:
-                            work_order_element = ET.Element("WorkOrder")
-                            work_order_element.text = updates.get("WorkOrder", "")  # Use provided value or empty string
-                            i_003.append(work_order_element)
+                            if purpose_element is None:
+                                purpose_element = ET.Element("Purpose")
+                                i_003.append(purpose_element)
+                            purpose_element.text = new_purpose_value
                             updated = True
-                        elif "WorkOrder" in updates and work_order_element.text != updates["WorkOrder"]:
-                            work_order_element.text = updates["WorkOrder"]
+                        elif purpose_element is None:
+                            # No update provided, and element doesn't exist — create with default "G"
+                            purpose_element = ET.Element("Purpose")
+                            purpose_element.text = "G"
+                            i_003.append(purpose_element)
                             updated = True
 
-                        # Apply user updates (if WorkOrder is provided in the form, overwrite it)
+                         
+                         
+                         # Apply user updates (if WorkOrder is provided in the form, overwrite it)
                         if "WorkOrder" in updates and updates["WorkOrder"].strip():
-                            new_work_order_value = updates["WorkOrder"].strip()
-
+                            new_work_order_value = updates["WorkOrder"]
                             work_order_element = i_003.find("WorkOrder")
                             if work_order_element is None:
                                 work_order_element = ET.Element("WorkOrder")
                                 i_003.append(work_order_element)
-                            else:
-                                work_order_element.text = new_work_order_value
-                                updated = True
-
-                        # Ensure <Project> exists if missing
-                        project_element = i_003.find("Project")
-                        if project_element is None:
-                            project_element = ET.Element("Project")
-                            project_element.text = updates.get("Project", "")  # Use provided value or empty string
-                            i_003.append(project_element)
-                            updated = True
-                        elif "Project" in updates and project_element.text != updates["Project"]:
-                            project_element.text = updates["Project"]
+                            # Forcefully overwrite the value, regardless of what's currently there
+                            work_order_element.text = new_work_order_value
+                            cprint(f'Work order changed to {new_work_order_value}', COLORS["cyan"] )
                             updated = True
 
+                        
+                        
                         # Apply user updates (if Project is provided in the form, overwrite it)
-                        if "Project" in updates:  # updates comes from the request
+                        if "Project" in updates and updates["Project"].strip():
                             new_project_value = updates["Project"]
-                            if project_element.text != new_project_value:
-                                project_element.text = new_project_value
-                                updated = True
-
-                        # Ensure <Pipe_Use> exists with default "G" if missing
-                        pipeUse_element = a_003.find("Pipe_Use")
-                        if pipeUse_element is None:
-                            pipeUse_element = ET.Element("Pipe_Use")
-                            pipeUse_element.text = "SS"
-                            a_003.append(pipeUse_element)
+                            project_element = i_003.find("Project")
+                            if project_element is None:
+                                project_element = ET.Element("Project")
+                                i_003.append(project_element)
+                            # Always override with the new value
+                            project_element.text = new_project_value
                             updated = True
 
-                        # Apply user updates (if Pipe_Use is provided in the form, overwrite it)
-                        if "Pipe_Use" in updates:  # updates comes from the request
-                            new_pipeUse_value = updates["Pipe_Use"]
-                            if pipeUse_element.text != new_pipeUse_value:
-                                pipeUse_element.text = new_pipeUse_value
-                                updated = True
                     
                     
                     if updated:
@@ -265,7 +245,7 @@ def update_xml_files_lateral(folder_path, updates):
                         # Backup the original file by renaming it to .bak
                         os.rename(file_path, backup_path)
                        
-                        tree.write(file_path)  # Save updated XML back to file
+                        tree.write(file_path, encoding="utf-8", xml_declaration=True)  # Save updated XML back to file
                         updated_files_lateral.append(file_path)
                         cprint(f"File {file_path} updated!", COLORS["cyan"])
                     else:

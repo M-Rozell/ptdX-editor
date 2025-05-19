@@ -2,6 +2,34 @@ import os
 from flask_cors import CORS
 from flask import Flask, request, jsonify, send_file
 from Utils import find_ptdx_files, update_xml_files, find_ptdx_files_lateral, update_xml_files_lateral, export_mainline_to_excel, export_lateral_to_excel
+import logging
+from colorlog import ColoredFormatter
+
+# Set up color logging
+formatter = ColoredFormatter(
+    "%(log_color)s%(asctime)s - %(levelname)s - %(message)s",
+    datefmt=None,
+    reset=True,
+    log_colors={
+        'DEBUG':    'cyan',
+        'INFO':     'green',
+        'WARNING':  'yellow',
+        'ERROR':    'red',
+        'CRITICAL': 'bold_red',
+    }
+)
+
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+
+logger = logging.getLogger()  # Root logger
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
+
+# Optional: Remove default handlers if needed
+logger.propagate = False
+
+
 
 
 app = Flask(__name__)

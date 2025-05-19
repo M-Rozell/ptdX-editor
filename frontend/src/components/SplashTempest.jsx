@@ -42,11 +42,11 @@ export default function SplashTempest({ onFinish }) {
             const radius = baseRadius * scale;
             
             // Calculate an angular offset for each ring
-            const rotationOffset = z * 0.1; // Gradual angular shift for each deeper ring
+            const rotationOffset = z * 8; // Gradual angular shift for each deeper ring
             
             // Draw each ring's spokes
             for (let i = 0; i < spokes; i++) {
-              const angle = (i / spokes) * Math.PI * .05 + rotationOffset + time * 0.01;
+              const angle = (i / spokes) * Math.PI * .01 + rotationOffset + time * 0.005;
               
               const x = Math.cos(angle) * radius;
               const y = Math.sin(angle) * radius;
@@ -77,7 +77,7 @@ export default function SplashTempest({ onFinish }) {
             
             // Draw each ring's spokes
             for (let i = 0; i < spokesTwo; i++) {
-              const angle = (i / spokesTwo) * Math.PI * .05 + rotationOffset + time * 0.01;
+              const angle = (i / spokesTwo) * Math.PI * .01 + rotationOffset + time * 0.005;
               
               const x = Math.cos(angle) * radius;
               const y = Math.sin(angle) * radius;
@@ -225,14 +225,14 @@ export default function SplashTempest({ onFinish }) {
         }
     }*/
         function drawEnemies() {
-            const fov = 300;
-            const numEnemies = 60;
-            const radius = 200;
+            const fov = 500;
+            const numEnemies = 200;
+            const radius = 275;
           
             for (let i = 0; i < numEnemies; i++) {
               // Use a consistent seed so each enemy has a stable direction
               const angle = (i / numEnemies) * Math.PI * 2;
-              const z = 600 - (time + i * 20) % 600;
+              const z = 600 - (time + i * 75) % 300;
           
               const scale = fov / (fov + z);
               const x = Math.cos(angle) * radius * scale;
@@ -240,7 +240,7 @@ export default function SplashTempest({ onFinish }) {
           
               ctx.fillStyle = 'cyan';
               ctx.beginPath();
-              ctx.arc(centerX() + x, centerY() + y, 6 * scale, 0, Math.PI * .5);
+              ctx.arc(centerX() + x, centerY() + y - 20, 6 * scale, 0, Math.PI * .6);
               ctx.fill();
             }
           }
@@ -277,7 +277,7 @@ export default function SplashTempest({ onFinish }) {
         onClick={onFinish}
         className='splashBtn'
       >
-        Enter Editor
+        Enter The Void
       </button>
     </div>
   );
