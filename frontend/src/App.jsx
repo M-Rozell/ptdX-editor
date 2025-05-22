@@ -1,14 +1,14 @@
 import "./css/App.css"
-import SpiralIntro from "./components/SpiralIntro";
 import SplashTempest from "./components/SplashTempest";
 import useLoadingDots from "./components/loadingDots";
-import React, { useState,useEffect, lazy, Suspense } from "react";
+import React, { useState, lazy, Suspense } from "react";
+import icon from "./assets/void.png"
 
 const FileListMainline = lazy(() => import("./components/FileListMainline"));
 const XMLFormMainline = lazy(() => import("./components/XMLFormMainline"));
 const FileListLateral = lazy(() => import("./components/FileListLateral"));
 const XMLFormLateral = lazy(() => import("./components/XMLFormLateral"));
-const FooterStatus = lazy(() => import("./components/footer"));
+const FooterStatus = lazy(() => import("./components/Footer"));
 
   
   const App = () => {
@@ -23,6 +23,20 @@ const FooterStatus = lazy(() => import("./components/footer"));
     const [loadingDots, setLoadingDots] = useLoadingDots(loading);
     const [folderPathLateral, setFolderPathLateral] = useState("");
     const [updatedFilesLateral, setUpdatedFilesLateral] = useState([]);
+    const [mainlineFormData, setMainlineFormData] = useState({
+      Work_Order: "",
+      Owner: "",
+      Customer: "",
+      Project: "",
+      Pipe_Use: "",
+      Purpose: "",});
+    const [lateralFormData, setLateralFormData] = useState({
+      Work_Order: "",
+      Owner: "",
+      Customer: "",
+      Project: "",
+      Pipe_Use: "",
+      Purpose: "",});
     
     
       
@@ -35,6 +49,10 @@ const FooterStatus = lazy(() => import("./components/footer"));
           setShowLateral(true);
           setShowMainline(false);
         };
+
+        const handleIconClick = () => {
+          setShowIntro(true)
+        }
      
 
     return (
@@ -43,7 +61,7 @@ const FooterStatus = lazy(() => import("./components/footer"));
           {!showIntro && (
             <div className="fadeInElement">
               <header>
-                <div className="headerBtns">
+                <div className="headerBtns">                   
                   <button type="button" 
                           className="folderSelectionBtn" 
                           onClick={handleMainlineClick}
@@ -86,6 +104,8 @@ const FooterStatus = lazy(() => import("./components/footer"));
                               loading={loading}
                               setLoading={setLoading}
                               setLoadingDots={setLoadingDots}
+                              formData={mainlineFormData}
+                              setFormData={setMainlineFormData}
                               />
                           </section>
                         </div>
@@ -118,6 +138,8 @@ const FooterStatus = lazy(() => import("./components/footer"));
                             loading={loading}
                             setLoading={setLoading}
                             setLoadingDots={setLoadingDots}
+                            formData={lateralFormData}
+                            setFormData={setLateralFormData}
                             />
                           </section>
                         </div>                 
@@ -130,6 +152,11 @@ const FooterStatus = lazy(() => import("./components/footer"));
                 
                 {(showMainline || showLateral) && (
                       <Suspense fallback={<div>Loading footer...</div>}>
+                              <img src={icon} 
+                                alt="Icon" 
+                                onClick={handleIconClick}
+                                className="icon"
+                              />
                         <FooterStatus
                           showMainline={showMainline}
                           folderPath={folderPath}
@@ -141,11 +168,11 @@ const FooterStatus = lazy(() => import("./components/footer"));
                           updatedFilesLateral={updatedFilesLateral}
                           loading={loading}
                           loadingDots={loadingDots}
-                        />
+                        />                            
                       </Suspense>
                   )} 
               </div> 
-            )}          
+            )}                     
         </div>
       );
   };

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import useLoadingDots from "./loadingDots";
+import TorchFlame from "./TorchFlame";
+import TypewriterText from "./TypewriterText";
 
 const FileListMainline = ({ folderPath, setFolderPath, files, setFiles, setUpdatedFiles }) => {
 
@@ -50,6 +52,7 @@ const FileListMainline = ({ folderPath, setFolderPath, files, setFiles, setUpdat
     setFiles([]);
     setFolderPath("");
     setUpdatedFiles([]);
+    setNoFilesFound(false);
   };
 
 
@@ -69,7 +72,14 @@ const FileListMainline = ({ folderPath, setFolderPath, files, setFiles, setUpdat
           {loading ? (
               <p className="loading">Loading{loadingDots}</p>
             ) : noFilesFound ? (
-              <li>No ptdX files found.</li>
+              <div className="torchFlameContainer">
+                <div className="torchLeft"><TorchFlame /></div>
+                <div>
+                      <TypewriterText text= "No ptdX exist here!!" speed={60}/>
+                </div>
+                <div className="torchRight"><TorchFlame /></div>
+                
+              </div>
             ) : (
               files.map((file, index) => <li key={index}>{file}</li>)
             )}

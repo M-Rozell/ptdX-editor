@@ -1,17 +1,9 @@
 import React, { useState, lazy, Suspense } from "react";
 const ExportModal = lazy(() => import("./ExportModal"));
 
-const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading}) => {
-  
+const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, formData,
+  setFormData}) => {
  
-  const [formData, setFormData] = useState({
-    WorkOrder: "",
-    Owner: "",
-    Customer: "",
-    Project: "",
-    Pipe_Use: "",
-    Purpose: "",
-  });
 
   const [showModal, setShowModal] = useState(false);
   const [exporting, setExporting] = useState(false); 
