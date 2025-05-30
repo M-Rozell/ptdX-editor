@@ -24,14 +24,14 @@ const FooterStatus = lazy(() => import("./components/Footer"));
     const [folderPathLateral, setFolderPathLateral] = useState("");
     const [updatedFilesLateral, setUpdatedFilesLateral] = useState([]);
     const [mainlineFormData, setMainlineFormData] = useState({
-      Work_Order: "",
+      WorkOrder: "",
       Owner: "",
       Customer: "",
       Project: "",
       Pipe_Use: "",
       Purpose: "",});
     const [lateralFormData, setLateralFormData] = useState({
-      Work_Order: "",
+      WorkOrder: "",
       Owner: "",
       Customer: "",
       Project: "",

@@ -51,6 +51,7 @@ const FileListLateral = ({ folderPathLateral, setFolderPathLateral, filesLateral
       setFilesLateral([]);
       setFolderPathLateral("");
       setUpdatedFilesLateral([]);
+      setNoFilesFound(false);
     };
 
   

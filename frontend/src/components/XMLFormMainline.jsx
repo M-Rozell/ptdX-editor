@@ -88,7 +88,7 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, for
 
   const handleClear = () => {
     setFormData({
-      Work_Order: "",
+      WorkOrder: "",
       Owner: "",
       Customer: "",
       Project: "",

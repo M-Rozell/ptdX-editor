@@ -180,6 +180,7 @@ ol {
 }
 
 li {
+  margin-left: 1rem;
   margin-bottom: .35rem;
   font-family: 'Segoe UI', sans-serif;
   font-weight: 100;
