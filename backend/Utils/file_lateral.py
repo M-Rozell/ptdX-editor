@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 import logging
 logger = logging.getLogger(__name__)
 
-######################## Find ptdX Mainline files ########################
+######################## Find ptdX Lateral files ########################
 def find_ptdx_files_lateral(project_folder):
     """Recursively scans for .ptdX files that contain both A_003 and I_003 elements."""
     file_list_lateral = []
@@ -29,7 +29,7 @@ def find_ptdx_files_lateral(project_folder):
 
 
 
-######################## Update ptdX Mainline files ########################
+######################## Update ptdX Lateral files ########################
 def update_xml_files_lateral(folder_path, updates):
     """Updates specified elements in all .ptdX files."""
     file_list_lateral = find_ptdx_files_lateral(folder_path)
@@ -136,8 +136,7 @@ def update_xml_files_lateral(folder_path, updates):
         # Update I_003 elements   
                     # Iterate over all I_003 elements
                     for i_003 in root_element.findall(".//I_003"):
-                       
-                       
+                                              
                        # Apply user updates (if Customer is provided in the form, overwrite it)
                         customer_element = i_003.find("Customer")
                         if "Customer" in updates and updates["Customer"].strip():
@@ -255,7 +254,7 @@ def update_xml_files_lateral(folder_path, updates):
 
 
 
-# Export Lateral data to Excel
+############# Export Lateral data to Excel  ############
 def export_lateral_to_excel(folder_path: str) -> str:
     """Parses ptdX files and exports relevant lateral data to an Excel file."""
     if not folder_path or not os.path.isdir(folder_path):
