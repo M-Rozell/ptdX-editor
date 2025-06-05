@@ -1,8 +1,8 @@
 import React, { useState, lazy, Suspense } from "react";
 const ExportModal = lazy(() => import("./ExportModal"));
 
-const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, formData,
-  setFormData}) => {
+const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, formDataMainline,
+  setFormDataMainline, formDataLateral}) => {
  
 
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +28,7 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, for
   
   
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormDataMainline({ ...formDataMainline, [e.target.name]: e.target.value });
   };
   
    
@@ -39,7 +39,7 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, for
     }
 
     const updates = Object.fromEntries(
-      Object.entries(formData).filter(([_, value]) => value !== "")
+      Object.entries(formDataMainline).filter(([_, value]) => value !== "")
     );
     setLoading(true);
 
@@ -87,7 +87,7 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, for
   }
 
   const handleClear = () => {
-    setFormData({
+    setFormDataMainline({
       WorkOrder: "",
       Owner: "",
       Customer: "",
@@ -98,21 +98,60 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, for
     console.log("Form cleared!");
   };
 
+  const handleFillBtn = () => {
+    setFormDataMainline(formDataLateral)
+  }
+
 
   return (
     <form onSubmit={handleSubmit} aria-labelledby="form-title">
+      
+      <div className="formBtnsWrapper">
+        <div className="fillBtnWrapper">
+            <button
+              type="button"
+              onClick={handleFillBtn}
+              data-title="Fill From Lateral"
+              className="fillBtn"
+              aria-label="Fill form with lateral values"
+            >Fill</button>
+          </div>
+
+        <div className="btnsFormWrapper">    
+            <button 
+              type="button"
+              onClick={handleSubmit} 
+              className="formBtns"
+            >Save Changes</button>
+            
+            <button 
+              type="button" 
+              onClick={handleExport} 
+              className="formBtns" 
+              aria-live="polite"
+            >Export</button>
+            
+            <button 
+              type="button" 
+              onClick={handleClear} 
+              className="formBtns"
+            >Clear</button>
+          </div>
+        </div>
       <fieldset className="formFieldset">
+      
         <legend>Edit Mainline</legend>
         
-        {Object.keys(formData).map((key) => (
+        {Object.keys(formDataMainline).map((key) => (
           <div key={key} className="inputWrapper">
             <label htmlFor={key}>{key.replace(/_/g, " ")}:</label>
             
             {key === "Pipe_Use" ? (
               <select
+                title={key}
                 id={key}
                 name={key}
-                value={formData[key]}
+                value={formDataMainline[key]}
                 onChange={handleChange}
               >
                 <option value=""></option>
@@ -124,9 +163,10 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, for
               </select>
             ) : key === "Purpose" ? (
               <select
+                title={key}
                 id={key}
                 name={key}
-                value={formData[key]}
+                value={formDataMainline[key]}
                 onChange={handleChange}
               >
                 <option value=""></option>
@@ -141,33 +181,14 @@ const XMLFormMainline = ({ folderPath, setUpdatedFiles, loading, setLoading, for
                 type="text"
                 id={key}
                 name={key}
-                value={formData[key]}
+                value={formDataMainline[key]}
                 onChange={handleChange}
               />
             )}
           </div>
         ))}
       
-          <div className="bottomBtnsWrapper">
-            <button 
-              type="button"
-              onClick={handleSubmit} 
-              className="bottomBtns"
-            >Save Changes</button>
-            
-            <button 
-              type="button" 
-              onClick={handleExport} 
-              className="bottomBtns" 
-              aria-live="polite"
-            >Export</button>
-            
-            <button 
-              type="button" 
-              onClick={handleClear} 
-              className="bottomBtns"
-            >Clear</button>
-          </div>
+          
       
             {showModal && (
               <Suspense fallback={<div>Loading Modal...</div>}>

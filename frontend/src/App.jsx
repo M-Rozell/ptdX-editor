@@ -2,7 +2,6 @@ import "./css/App.css"
 import SplashTempest from "./components/SplashTempest";
 import useLoadingDots from "./components/loadingDots";
 import React, { useState, lazy, Suspense } from "react";
-import icon from "./assets/void.png"
 
 const FileListMainline = lazy(() => import("./components/FileListMainline"));
 const XMLFormMainline = lazy(() => import("./components/XMLFormMainline"));
@@ -50,9 +49,7 @@ const FooterStatus = lazy(() => import("./components/Footer"));
           setShowMainline(false);
         };
 
-        const handleIconClick = () => {
-          setShowIntro(true)
-        }
+        
      
 
     return (
@@ -104,8 +101,9 @@ const FooterStatus = lazy(() => import("./components/Footer"));
                               loading={loading}
                               setLoading={setLoading}
                               setLoadingDots={setLoadingDots}
-                              formData={mainlineFormData}
-                              setFormData={setMainlineFormData}
+                              formDataMainline={mainlineFormData}
+                              setFormDataMainline={setMainlineFormData}
+                              formDataLateral={lateralFormData}
                               />
                           </section>
                         </div>
@@ -138,8 +136,9 @@ const FooterStatus = lazy(() => import("./components/Footer"));
                             loading={loading}
                             setLoading={setLoading}
                             setLoadingDots={setLoadingDots}
-                            formData={lateralFormData}
-                            setFormData={setLateralFormData}
+                            formDataLateral={lateralFormData}
+                            setFormDataLateral={setLateralFormData}
+                            formDataMainline={mainlineFormData}
                             />
                           </section>
                         </div>                 
@@ -151,12 +150,7 @@ const FooterStatus = lazy(() => import("./components/Footer"));
                 </main>          
                 
                 {(showMainline || showLateral) && (
-                      <Suspense fallback={<div>Loading footer...</div>}>
-                              <img src={icon} 
-                                alt="Icon" 
-                                onClick={handleIconClick}
-                                className="icon"
-                              />
+                      <Suspense fallback={<div>Loading footer...</div>}>                              
                         <FooterStatus
                           showMainline={showMainline}
                           folderPath={folderPath}
@@ -168,7 +162,8 @@ const FooterStatus = lazy(() => import("./components/Footer"));
                           updatedFilesLateral={updatedFilesLateral}
                           loading={loading}
                           loadingDots={loadingDots}
-                        />                            
+                          setShowIntro={setShowIntro}
+                        />                                                  
                       </Suspense>
                   )} 
               </div> 

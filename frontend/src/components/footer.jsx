@@ -1,11 +1,12 @@
 import React from "react";
 import "../css/App.css"
 import useLoadingDots from "./loadingDots";
+import icon from "../assets/void.png"
 
 const FooterStatus = ({ 
   showMainline, folderPath, files, updatedFiles, 
   showLateral, folderPathLateral, filesLateral, updatedFilesLateral,
-  loading
+  loading, setShowIntro
   
 }) => {
   const countFoundFiles = files.length;
@@ -13,6 +14,9 @@ const FooterStatus = ({
   const countUpdatedFiles = updatedFiles.length;
   const countUpdatedFilesLateral = updatedFilesLateral.length;
   const loadingDots = useLoadingDots(loading);
+  const handleIconClick = () => {
+    setShowIntro(true)
+  }
 
  
 
@@ -52,7 +56,11 @@ const FooterStatus = ({
                                 </>
                           )}             
       </section>
-             
+                        <img src={icon} 
+                          alt="Icon" 
+                          onClick={handleIconClick}
+                          className="icon"
+                          />     
     </footer>
   );
 };

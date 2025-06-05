@@ -20,7 +20,12 @@ body,html {
   --lightTxt: #FFFFE8;
   --lightGreyBg: #303030;
   --blue: #02fdd7;
-  --title:#c1c2c1;
+  --title:rgb(193, 194, 193);
+}
+
+::selection {
+  background: var(--lightGreyBorder);
+  color: var(--blue);
 }
 
 @font-face {
@@ -87,7 +92,6 @@ fieldset{
 
 .formFieldset {
   padding: 0;
-  margin-top: 1rem;
 } 
 
 legend {
@@ -198,6 +202,102 @@ form{
   flex-direction: column;
 }
 
+
+.formBtnsWrapper {
+  display: flex;
+  justify-content: space-between;
+  margin: 1.25rem 1rem .5rem 1rem
+
+}
+
+.btnFormWrapper {
+  width: 75%;
+  align-items: right;
+}
+
+.formBtns {
+  margin: .25rem;
+  padding: .25rem .75rem;
+  align-items: right;
+  line-height: 1.3;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 100;
+  font-size: .75rem;
+  color: var(--lightTxt);
+  background: var(--lightGreyBg);
+  border: .025rem solid var(--lightGreyBorder);
+  cursor: pointer;
+}
+.formBtns:not(:disabled):hover {
+  transform: scale(1.05);
+}
+
+.formBtns:not(:disabled):hover:active {
+  transform: scale(1.05) translateY(.05rem);
+}
+
+.fillBtnWrapper{
+  position: relative;
+  width: 25%;
+}
+
+
+@keyframes pulseshadow {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 rgba(255, 255, 232, 0.4);
+    -moz-box-shadow: 0 0 0 0 rgba(255, 255, 232, 0.4);
+    box-shadow: 0 0 0 0 rgba(255, 255, 232, 0.4);
+  }
+  70% {
+      -webkit-box-shadow: 0 0 0 5px rgba(255, 255, 232, 0);
+      -moz-box-shadow: 0 0 0 5px rgba(255, 255, 232, 0);
+      box-shadow: 0 0 0 5px rgba(255, 255, 232, 0);
+  }
+  100% {
+      -webkit-box-shadow: 0 0 0 0 rgba(255, 255, 232, 0);
+      -moz-box-shadow: 0 0 0 0 rgba(255, 255, 232, 0);
+      box-shadow: 0 0 0 0 rgba(255, 255, 232, 0);
+  }
+}
+.fillBtn {
+  position: absolute;
+  left: 0;
+  bottom: .25rem;
+  font-size: .25rem;
+  background-color: transparent;
+  color: transparent;
+  border: 1.5px solid var(--lightGreyBorder);
+  box-shadow: 0 0 0 0 rgb(88 84 84);
+  cursor: pointer;
+}
+.fillBtn:hover {
+  animation: pulseshadow 1.5s infinite;
+}
+[data-title]:hover::after {
+  opacity: 1;
+    transition: all 0.1s ease 0.25s;
+    visibility: visible;
+}
+[data-title]:after {
+  content: attr(data-title);
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 100;
+  background-color: transparent;
+  color: var(--blue);
+  font-size: .9rem;
+  position: absolute;
+  bottom: 100%;
+  left: 125%;
+  white-space: nowrap;
+  opacity: 0;
+  z-index: 99999;
+  visibility: hidden;
+}
+[data-title] {
+  position: absolute;
+}
+
+
 .inputWrapper {
   margin-bottom: .5rem;
   margin-left: 1rem;
@@ -235,32 +335,6 @@ option {
   background-color: var(--lightGreyBg);
 }
 
-.bottomBtnsWrapper {
-  margin-right: 1.25rem;
-  margin-top: 1.5rem;
-  text-align: right;
-}
-
-.bottomBtns {
-  margin: .25rem;
-  padding: .25rem .75rem;
-  line-height: 1.3;
-  font-family: 'Segoe UI', sans-serif;
-  font-weight: 100;
-  font-size: .75rem;
-  color: var(--lightTxt);
-  background: var(--lightGreyBg);
-  border: .025rem solid var(--lightGreyBorder);
-  cursor: pointer;
-}
-.bottomBtns:not(:disabled):hover {
-  transform: scale(1.05);
-}
-
-.bottomBtns:not(:disabled):hover:active {
-  transform: scale(1.05) translateY(.05rem);
-}
-
 
 
 /*Footer*/
@@ -288,6 +362,15 @@ footer::before {
   margin-bottom: .7rem;
 }
 
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+        animation-timing-function: ease-in-out;
+  }
+  50% {
+    transform: scale(1.25);
+  }
+}
 .icon {
   height: 1.5rem;
   cursor: pointer;
@@ -296,8 +379,8 @@ footer::before {
   bottom: .75rem;
   z-index: 2;
 }
-.icon:not(:disabled):hover {
-  transform: scale(1.25);
+.icon:hover {
+  animation: pulse 2.5s infinite; 
 }
 
 
