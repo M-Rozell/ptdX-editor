@@ -56,11 +56,11 @@ const FooterStatus = ({
                                 </>
                           )}             
       </section>
-                        <img src={icon} 
-                          alt="Icon" 
-                          onClick={handleIconClick}
-                          className="icon"
-                          />     
+                    <img src={icon} 
+                      alt="Icon" 
+                      onClick={handleIconClick}
+                      className="icon"
+                    />     
     </footer>
   );
 };

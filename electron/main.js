@@ -17,7 +17,7 @@ function createWindow() {
       ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
       titleBarOverlay: {
         color: '#1c1c1c',
-      symbolColor: '#fa008a',
+      symbolColor: '#fa0064',
       height: 8
     },
       webPreferences: {

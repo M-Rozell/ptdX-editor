@@ -15,7 +15,7 @@ body,html {
 
 :root {
   --darkGrey: #1c1c1c;
-  --pink: #fa008a;
+  --pink: #fa0064;
   --lightGreyBorder: #585454;
   --lightTxt: #FFFFE8;
   --lightGreyBg: #303030;
@@ -104,7 +104,7 @@ legend {
   flex-direction: column;
   border-radius: 0 0 0 0 ;
   position: relative;
-  background: linear-gradient(var(--lightGreyBorder), var(--pink)) no-repeat center/.04rem 100%;
+  background: linear-gradient(var(--lightGreyBorder), var(--pink)) no-repeat center/.05rem 100%;
   z-index: 1;
 }
 .filesFormWrapper::before {
