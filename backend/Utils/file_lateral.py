@@ -311,7 +311,7 @@ def export_lateral_to_excel(folder_path: str) -> str:
                     break  # Use the first occurrence
 
             extracted_data.append([
-                file_name, date, name, asset, upstream_mh, downstream_mh, size, distance, direction, msa_comments, cleaning
+                date, name, asset, upstream_mh, downstream_mh, size, distance, msa_comments, cleaning, direction, file_name
             ])
 
         except Exception as e:
@@ -319,7 +319,7 @@ def export_lateral_to_excel(folder_path: str) -> str:
 
     # Create a DataFrame and save as Excel
     df = pd.DataFrame(extracted_data, columns=[
-        "File Name", "Date", "Name", "Asset", "Upstream MH", "Downstream MH", "Size", "Distance", "Direction", "MSA", "Cleaning"
+        "Date", "Name", "Asset", "Upstream MH", "Downstream MH", "Size", "Distance", "MSA", "Cleaning", "Direction", "File Name"
     ])
 
     export_path = os.path.join(folder_path, "export_lateral.xlsx")
